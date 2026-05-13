@@ -78,6 +78,36 @@ const branchRemote    = name     => {
   return r.status === 0 && r.stdout.trim() !== '';
 };
 
+// Lista os arquivos *modificados/deletados* do stash mais recente (não inclui untracked).
+// Usado pra detectar conflito "deleted by us" antes de fazer pop.
+function stashTrackedFiles(ref = 'stash@{0}') {
+  const r = git(['stash', 'show', '--name-only', ref]);
+  if (r.status !== 0) return [];
+  return r.stdout.trim().split('\n').filter(Boolean);
+}
+
+// Filtra a lista, retornando só arquivos que NÃO existem em HEAD.
+// Quando algum desses arquivos está como modificado no stash, o pop dará
+// conflito "deleted by us" (o stash quer modificar, mas não há arquivo aqui).
+function filesMissingInHead(files) {
+  return files.filter(f => git(['cat-file', '-e', `HEAD:${f}`]).status !== 0);
+}
+
+// Lista branches (locais e remotas) que contêm TODOS os arquivos passados.
+// Usado pra sugerir alternativas ao usuário quando a base não tem os arquivos.
+function branchesContainingAll(files) {
+  if (files.length === 0) return [];
+  const refs = git(['for-each-ref', '--format=%(refname:short)', 'refs/heads/', 'refs/remotes/']);
+  if (refs.status !== 0) return [];
+  return refs.stdout.trim().split('\n')
+    .filter(Boolean)
+    .filter(ref => !ref.endsWith('/HEAD')) // ignora origin/HEAD
+    .filter(ref => files.every(f => {
+      const r = git(['ls-tree', ref, '--', f]);
+      return r.status === 0 && r.stdout.trim() !== '';
+    }));
+}
+
 function parseGitHubRepo(url) {
   // ssh: git@github.com:user/repo.git  |  https: https://github.com/user/repo(.git)?
   const m = url.match(/github\.com[:/]([^/]+)\/([^/.]+?)(?:\.git)?$/);
@@ -102,9 +132,16 @@ async function askYesNo(question, defaultYes = true) {
 
 async function askChoice(question, options) {
   console.log(`\n${c.cyan}${question}${c.reset}`);
+  // descrição pode ter múltiplas linhas (separadas por \n); demais linhas
+  // ficam alinhadas embaixo da primeira pra ficar bonitinho.
+  const indent = '      ' + ' '.repeat(10) + ' '; // "  NN) " (6) + key padded (10) + " "
   options.forEach((opt, i) => {
     const num = String(i + 1).padStart(2);
-    console.log(`  ${c.bold}${num}${c.reset}) ${c.green}${opt.key.padEnd(10)}${c.reset} ${c.dim}${opt.desc}${c.reset}`);
+    const lines = opt.desc.split('\n');
+    console.log(`  ${c.bold}${num}${c.reset}) ${c.green}${opt.key.padEnd(10)}${c.reset} ${c.dim}${lines[0]}${c.reset}`);
+    for (let j = 1; j < lines.length; j++) {
+      console.log(`${indent}${c.dim}${lines[j]}${c.reset}`);
+    }
   });
   while (true) {
     const ans = await ask(`\n  → escolha (1-${options.length}): `);
@@ -295,6 +332,16 @@ async function main() {
   // ---------------------------------------------------------------------------
   step('Verificando ambiente');
   await ensureGitRepo();
+
+  // Sempre operar a partir da raiz do repositório.
+  // Sem isso, "git add ." só pega a pasta atual (ex: rodar via "npm run push"
+  // de uma subpasta deixava arquivos do resto do repo de fora do commit).
+  const repoRoot = git(['rev-parse', '--show-toplevel']).stdout.trim();
+  if (repoRoot && path.resolve(repoRoot) !== path.resolve(process.cwd())) {
+    process.chdir(repoRoot);
+    ok(`Trabalhando da raiz do repositório: ${repoRoot}`);
+  }
+
   await ensureRemote();
   await ensureBaseBranch(baseBranch, config.productionBranch);
 
@@ -308,10 +355,28 @@ async function main() {
     warn('Você tem mudanças não commitadas:');
     console.log(c.dim + git(['status', '--short']).stdout + c.reset);
 
-    const choice = await askChoice('O que fazer?', [
-      { key: 'carregar', desc: 'levar essas mudanças pra nova branch (recomendado)' },
-      { key: 'stash',    desc: `fazer stash, ir pra ${baseBranch} limpo, restaurar na nova branch` },
-      { key: 'abortar',  desc: 'parar e resolver manualmente' },
+    console.log(`\n${c.dim}  Pra criar a nova feature branch sem perder essas mudanças,${c.reset}`);
+    console.log(`${c.dim}  preciso decidir o que fazer com elas. Escolha uma opção:${c.reset}`);
+
+    const choice = await askChoice('Como prosseguir?', [
+      {
+        key: 'carregar',
+        desc: 'Trazer suas mudanças pra nova branch como elas estão agora.\n'
+            + `Mais simples e rápido — recomendado pra maioria dos casos.\n`
+            + `⚠ A base (${baseBranch}) NÃO será atualizada do remoto antes.`
+      },
+      {
+        key: 'stash',
+        desc: `Guardar as mudanças temporariamente, atualizar ${baseBranch} do remoto,\n`
+            + 'criar a nova branch a partir dela e devolver as mudanças nessa nova branch.\n'
+            + `Use quando ${baseBranch} pode ter recebido commits novos no GitHub.`
+      },
+      {
+        key: 'abortar',
+        desc: 'Sair do script sem mexer em nada.\n'
+            + 'Use se quiser primeiro commitar, descartar (git restore) ou organizar\n'
+            + 'essas mudanças à mão antes de rodar de novo.'
+      },
     ]);
 
     if (choice.key === 'abortar') exitWithError('Abortado pelo usuário.', 0);
@@ -376,17 +441,101 @@ async function main() {
   // 5. Restaura stash se aplicável
   // ---------------------------------------------------------------------------
   if (stashed) {
+    // ---------- 5a. Detecção preventiva de conflito "deleted by us" ----------
+    // O stash pode modificar arquivos que existem em outras branches mas
+    // NÃO existem nesta nova branch (porque a base ainda não foi mergeada
+    // com essas mudanças). Sem essa checagem, o pop dá um conflito críptico.
+    const stashFiles = stashTrackedFiles();
+    const missing = filesMissingInHead(stashFiles);
+
+    if (missing.length > 0) {
+      console.log(`\n  ${c.yellow}⚠ Atenção:${c.reset} o stash modifica ${c.bold}${missing.length}${c.reset} arquivo(s)`);
+      console.log(`    que ${c.bold}NÃO existem${c.reset} na branch nova "${c.bold}${newBranch}${c.reset}":`);
+      missing.forEach(f => console.log(`     ${c.dim}•${c.reset} ${f}`));
+      console.log(`\n  ${c.dim}Por que isso acontece?${c.reset}`);
+      console.log(`  ${c.dim}Esses arquivos existem em outra branch que ainda não foi mergeada${c.reset}`);
+      console.log(`  ${c.dim}em "${baseBranch}" — então sua nova branch (vinda de "${baseBranch}") não tem eles.${c.reset}`);
+      console.log(`  ${c.dim}Se eu fizer o pop assim, o git vai gerar conflito "deleted by us".${c.reset}`);
+
+      const candidates = branchesContainingAll(missing);
+      if (candidates.length > 0) {
+        console.log(`\n  ${c.dim}Branches que JÁ têm todos esses arquivos:${c.reset}`);
+        candidates.forEach(b => console.log(`     ${c.cyan}${b}${c.reset}`));
+      }
+
+      const opts = [];
+      if (candidates.length > 0) {
+        opts.push({
+          key: 'rebase',
+          desc: `Recriar "${newBranch}" a partir de uma branch alternativa que tenha esses arquivos\n`
+              + '(vou listar as opções pra você escolher).'
+        });
+      }
+      opts.push({
+        key: 'forçar',
+        desc: 'Tentar o pop assim mesmo. Vai gerar conflito que vc resolve no editor.\n'
+            + 'Útil se você sabe o que está fazendo.'
+      });
+      opts.push({
+        key: 'sair',
+        desc: 'Sair do script preservando o stash. Suas mudanças continuam em\n'
+            + '"git stash list" (banana-push:auto). A branch nova permanece criada.'
+      });
+
+      const action = await askChoice('Como prosseguir?', opts);
+
+      if (action.key === 'rebase') {
+        const pick = await askChoice(
+          'A partir de qual branch recriar?',
+          candidates.map(b => ({ key: b, desc: 'usar esta branch como nova base' }))
+        );
+        step(`Recriando "${newBranch}" a partir de "${pick.key}"`);
+        // Voltar pra base original pra poder deletar a branch atual
+        const co = git(['checkout', baseBranch]);
+        if (co.status !== 0) exitWithError(`Falha ao voltar pra "${baseBranch}":\n${co.stderr}`);
+        const del = git(['branch', '-D', newBranch]);
+        if (del.status !== 0) exitWithError(`Falha ao apagar branch antiga:\n${del.stderr}`);
+        const recb = git(['checkout', '-b', newBranch, pick.key]);
+        if (recb.status !== 0) exitWithError(`Falha ao recriar branch:\n${recb.stderr}`);
+        ok(`Branch "${newBranch}" recriada a partir de "${pick.key}"`);
+      } else if (action.key === 'sair') {
+        warn('Saindo conforme solicitado. Stash preservado.');
+        console.log(`\n  ${c.dim}Pra restaurar manualmente quando quiser:${c.reset}`);
+        console.log(`     ${c.cyan}git stash pop${c.reset}`);
+        pendingStashRestore = false; // não tenta de novo
+        rl.close();
+        process.exit(0);
+      }
+      // 'forçar' cai direto no pop abaixo
+    }
+
+    // ---------- 5b. Pop propriamente dito ----------
     step('Restaurando stash na nova branch');
     const pop = git(['stash', 'pop']);
     if (pop.status !== 0) {
-      warn('Conflito ao restaurar stash. Resolva manualmente.');
-      // pop falhou mas o stash continua na pilha — exitWithError vai tentar
-      // restaurar de novo, então desligamos a rede de segurança aqui pra
-      // evitar duas tentativas. O stash permanece em "git stash list".
-      pendingStashRestore = false;
-      exitWithError(pop.stderr);
+      // Pop falhou — provavelmente conflito. Mostrar mensagem clara.
+      console.log(`\n  ${c.red}✗ Conflito ao restaurar o stash.${c.reset}`);
+      const status = git(['status', '--short']).stdout;
+      console.log(`\n  ${c.dim}Estado atual do repositório:${c.reset}`);
+      console.log(c.dim + status + c.reset);
+
+      // Detectar tipo mais comum (deleted by us = "DU")
+      if (/^DU |^UD /m.test(status) || /deleted by/.test(pop.stderr || '')) {
+        console.log(`  ${c.yellow}Tipo de conflito: "deleted by us"${c.reset}`);
+        console.log(`  O stash modificou um arquivo que esta branch não tem.`);
+        console.log(`\n  ${c.bold}Como resolver:${c.reset}`);
+        console.log(`     ${c.cyan}git rm <arquivo>${c.reset}                  → aceita a deleção (descarta a versão do stash)`);
+        console.log(`     ${c.cyan}git checkout --theirs -- <arquivo>${c.reset} → mantém a versão do stash`);
+        console.log(`     ${c.cyan}git stash drop${c.reset}                    → quando terminar, descarta o stash`);
+      } else {
+        console.log(`  ${c.bold}Como resolver:${c.reset} edite os arquivos em conflito e rode:`);
+        console.log(`     ${c.cyan}git add <arquivos>${c.reset}`);
+        console.log(`     ${c.cyan}git stash drop${c.reset}`);
+      }
+      pendingStashRestore = false; // stash continua na pilha; usuário resolve
+      exitWithError('Resolva os conflitos manualmente conforme as instruções acima.');
     }
-    pendingStashRestore = false; // pop bem-sucedido, não precisa mais
+    pendingStashRestore = false;
     ok('Stash restaurado');
   }
 
@@ -433,8 +582,8 @@ async function main() {
   // ---------------------------------------------------------------------------
   // 10. add + commit + push
   // ---------------------------------------------------------------------------
-  step('git add .');
-  await gitInherit(['add', '.']);
+  step('git add -A (todo o repositório)');
+  await gitInherit(['add', '-A']);
 
   step('git commit');
   const commitMsg = `${typeChoice.key}: ${msg}`;
@@ -444,6 +593,17 @@ async function main() {
     exitWithError('Commit falhou (pre-commit hook? lint?). Resolva e tente novamente.');
   }
   ok(`Commit: ${c.bold}${commitMsg}${c.reset}`);
+
+  // Sanidade: depois do commit o working tree DEVE estar limpo.
+  // Se sobrou algo, é sinal de bug ou hook que removeu coisas — avisa antes do push.
+  if (!isClean()) {
+    warn('Atenção: após o commit, ainda há mudanças não commitadas:');
+    console.log(c.dim + git(['status', '--short']).stdout + c.reset);
+    warn('Essas mudanças NÃO entrarão no push. Cancele com Ctrl+C se quiser revisar.');
+    if (!await askYesNo('Continuar com o push mesmo assim?', false)) {
+      exitWithError('Cancelado pelo usuário.', 0);
+    }
+  }
 
   step('git push -u origin');
   try {
