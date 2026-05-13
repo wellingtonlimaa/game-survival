@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/menu/ChestButton.gd" id="1_chest"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chest"]
+bg_color = Color(0.118, 0.094, 0.18, 0.949)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 4
+border_color = Color(0.553, 0.412, 0.886, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+
+[node name="ChestButton" type="Button"]
+custom_minimum_size = Vector2(140, 84)
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_colors/font_hover_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_chest")
+theme_override_styles/hover = SubResource("StyleBoxFlat_chest")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_chest")
+text = "📦
+Baú Cap."
+script = ExtResource("1_chest")

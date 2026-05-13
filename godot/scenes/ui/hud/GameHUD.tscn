@@ -1,0 +1,225 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/hud/GameHUD.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud/Minimap.tscn" id="2_mm"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud/WeaponBar.tscn" id="3_wb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chip"]
+bg_color = Color(0.067, 0.055, 0.118, 0.851)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
+bg_color = Color(0.067, 0.055, 0.118, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_fill"]
+bg_color = Color(0.886, 0.275, 0.345, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
+bg_color = Color(0.043, 0.035, 0.078, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_fill"]
+bg_color = Color(0.439, 0.871, 0.494, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="GameHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="TopRow" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 64.0
+theme_override_constants/separation = 12
+
+[node name="MapChip" type="PanelContainer" parent="TopRow"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="MapLabel" type="Label" parent="TopRow/MapChip"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 16
+text = "Mapa"
+
+[node name="Spacer" type="Control" parent="TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TimerChip" type="PanelContainer" parent="TopRow"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="TimerLabel" type="Label" parent="TopRow/TimerChip"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 20
+text = "00:00"
+
+[node name="BackButton" type="Button" parent="TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_chip")
+theme_override_styles/hover = SubResource("StyleBoxFlat_chip")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_chip")
+text = "← Menu"
+
+[node name="StatusPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 80.0
+offset_right = 260.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="StatusVBox" type="VBoxContainer" parent="StatusPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LevelLabel" type="Label" parent="StatusPanel/StatusVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 18
+text = "Lv 1"
+
+[node name="HpRow" type="VBoxContainer" parent="StatusPanel/StatusVBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HpLabel" type="Label" parent="StatusPanel/StatusVBox/HpRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "110 / 110"
+
+[node name="HpBar" type="ProgressBar" parent="StatusPanel/StatusVBox/HpRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hp_fill")
+max_value = 110.0
+value = 110.0
+show_percentage = false
+
+[node name="XpBar" type="ProgressBar" parent="StatusPanel/StatusVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
+max_value = 16.0
+show_percentage = false
+
+[node name="WeaponBar" parent="." instance=ExtResource("3_wb")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -90.0
+offset_right = -220.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="Minimap" parent="." instance=ExtResource("2_mm")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -196.0
+offset_top = -146.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="BannerLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 110.0
+offset_right = 260.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.886, 0.275, 0.345, 1)
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0.043, 0.035, 0.078, 1)
+theme_override_font_sizes/font_size = 28
+text = ""
+horizontal_alignment = 1
+
+[node name="HintLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 14
+text = "WASD/Setas mover · Mouse mira · ESC volta"
+horizontal_alignment = 1

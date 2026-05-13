@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+key = "phoenix_ember"
+display_name = "Brasa da Fênix"
+description = "Cura 55 HP agora e regenera 0.35/s para sempre."
+icon_color = Color(1.0, 0.561, 0.243, 1.0)
+regen_bonus = 0.35
+heal_on_pickup = 55.0

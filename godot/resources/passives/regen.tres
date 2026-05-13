@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PassiveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_pd"]
+
+[resource]
+script = ExtResource("1_pd")
+key = "regen"
+display_name = "Folego"
+description = "Recupera vida com o tempo e aumenta sua vida máxima."
+icon_color = Color(0.886, 0.275, 0.345, 1.0)
+max_level = 5
+regen_per_level = 0.18
+max_hp_bonus_per_level = 6.0

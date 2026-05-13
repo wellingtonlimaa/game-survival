@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "summoner"
+display_name = "Invocador"
+tier = 0
+hp = 62.0
+speed = 64.0
+contact_damage = 12.0
+radius = 18.0
+xp_value = 8
+coin_value = 3
+behavior = 3
+attack_cooldown = 4.0
+prefered_distance = 260.0
+windup_time = 0.8
+summon_pool = PackedStringArray("runner")
+summon_count = 2
+body_color = Color(0.396, 0.275, 0.541, 1.0)
+eye_color = Color(0.722, 0.553, 1.0, 1.0)
+silhouette = "mask"

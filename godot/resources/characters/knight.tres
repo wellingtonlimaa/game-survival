@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "knight"
+display_name = "Guardião"
+description = "Tanque. Mais vida e armadura, mas pé pesado."
+unlock_hint = "Acumule 250 KOs"
+hp_mult = 1.30
+speed_mult = 0.90
+armor_bonus = 2.0
+starter_weapon = "wand"
+body_color = Color(0.439, 0.439, 0.470, 1.0)
+head_color = Color(0.165, 0.165, 0.200, 1.0)
+eye_color = Color(0.953, 0.929, 0.871, 1.0)

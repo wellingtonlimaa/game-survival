@@ -1,0 +1,96 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/upgrade/UpgradeScreen.gd" id="1_screen"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_reroll"]
+bg_color = Color(0.165, 0.141, 0.235, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.553, 0.412, 0.886, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+
+[node name="UpgradeScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_screen")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.043, 0.035, 0.078, 0.78)
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 24.0
+offset_top = 32.0
+offset_right = -24.0
+offset_bottom = -32.0
+theme_override_constants/separation = 18
+
+[node name="TitleLabel" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_constants/outline_size = 6
+theme_override_colors/font_outline_color = Color(0.043, 0.035, 0.078, 1)
+theme_override_font_sizes/font_size = 48
+text = "VOCÊ EVOLUIU!"
+horizontal_alignment = 1
+
+[node name="CardsScroll" type="ScrollContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="CardsRow" type="VBoxContainer" parent="Layout/CardsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="Footer" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Layout/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 20
+text = "Re-rolls: 2 · Banimentos: 1"
+
+[node name="RerollButton" type="Button" parent="Layout/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_reroll")
+theme_override_styles/hover = SubResource("StyleBoxFlat_reroll")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_reroll")
+text = "🔄 Re-rolar"

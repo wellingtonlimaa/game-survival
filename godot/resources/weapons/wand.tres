@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "wand"
+display_name = "Varinha Sombria"
+description = "Dispara projéteis mágicos no inimigo mais próximo."
+icon_color = Color(0.553, 0.412, 0.886, 1.0)
+behavior = 0
+cooldown = 0.85
+damage = 14.0
+projectile_count = 1
+projectile_speed = 420.0
+projectile_lifetime = 1.6
+projectile_radius = 7.0
+pierce = 0
+spread_radians = 0.0
+knockback = 110.0
+projectile_color = Color(0.722, 0.553, 1.0, 1.0)
+projectile_kind = "bolt"
+sound_key = "wand"

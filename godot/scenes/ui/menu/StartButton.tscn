@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/menu/StartButton.gd" id="1_start"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(1, 0.776, 0.298, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 6
+border_color = Color(0.435, 0.275, 0.063, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+content_margin_left = 28.0
+content_margin_top = 14.0
+content_margin_right = 28.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(1, 0.851, 0.396, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 6
+border_color = Color(0.435, 0.275, 0.063, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+content_margin_left = 28.0
+content_margin_top = 14.0
+content_margin_right = 28.0
+content_margin_bottom = 16.0
+
+[node name="StartButton" type="Button"]
+custom_minimum_size = Vector2(260, 96)
+theme_override_colors/font_color = Color(0.137, 0.094, 0.039, 1)
+theme_override_colors/font_hover_color = Color(0.137, 0.094, 0.039, 1)
+theme_override_colors/font_pressed_color = Color(0.137, 0.094, 0.039, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn")
+text = "COMEÇAR
+⚡ x 5"
+script = ExtResource("1_start")

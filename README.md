@@ -1,153 +1,186 @@
 # Noite dos Sobreviventes
 
-Prototipo de jogo web inspirado em Vampire Survivors, feito em Python com pygame e preparado para Pygbag.
+> ## 🍌 banana-push — Como enviar atualizações pro GitHub
+>
+> **Toda vez que terminar de mexer no código e quiser enviar:**
+>
+> ```bash
+> npm run push
+> ```
+>
+> O script `banana-push` automatiza tudo:
+>
+> 1. **Atualiza** `develop` (`checkout` + `pull`)
+> 2. **Pergunta o nome** da sua nova branch (valida formato e duplicatas)
+> 3. **Cria** a branch a partir de `develop`
+> 4. **Pergunta o tipo** semântico do commit (feat/fix/refactor/style/docs/chore/test/perf/build/ci)
+> 5. **Pergunta a mensagem** do commit
+> 6. Faz `git add .` + `git commit` + `git push -u origin <branch>`
+> 7. **Mostra a URL do Pull Request** prontinha pra abrir
+>
+> ### Setup inicial (em qualquer projeto Node.js)
+>
+> 1. Copia `banana-push/scripts/banana-push.js` pra pasta `scripts/` do seu projeto Node.js
+> 2. Adiciona no `package.json`:
+>    ```json
+>    {
+>      "scripts": {
+>        "push": "node scripts/banana-push.js"
+>      }
+>    }
+>    ```
+> 3. Roda `npm run push` 🎉
+>
+> Documentação completa: [banana-push/README.md](banana-push/README.md)
 
-## Controles
+---
 
-- `WASD` ou setas: mover
-- Mouse: mira livre em qualquer direcao
-- Ataque automatico na direcao da mira, sem precisar clicar
-- `1`, `2`, `3` ou clique: escolher upgrade
-- `F1`, `F2`, `F3`: escolher meta de 10, 15 ou 30 minutos nos primeiros segundos
-- `I`: entrar no modo infinito depois de vencer
-- `P`: pausar/continuar
-- `R`: reiniciar apos perder
-- Menus: setas navegam, esquerda/direita ajustam opcoes, ENTER confirma, ESC volta
+Survivor-like cooperativo de sobrevivência em floresta noturna.
 
-## Gameplay atual
+> Projeto **migrado de Python/pygame para Godot 4.6 + GDScript** em 8 fases,
+> reestruturado em arquitetura modular e data-driven nível de estúdio profissional.
 
-- 12 armas automaticas: Varinha, Aura, Facas, Machado, Raio, Bomba, Drone, Lanca, Livro, Fogo, Foice e Corrente
-- Evolucao de armas ao passar do nivel maximo
-- Upgrades com raridade: comum, raro, epico e lendario
-- Passivas: velocidade, regeneracao, ima, armadura, sorte e cooldown
-- Chefes a cada 2 minutos
-- Baus/drop especial ao derrotar chefes e elites
-- Inimigos especiais: arqueiro, exploder, tanque, invocador, corredor e chefe
-- Eventos de arena: chuva de meteoros, neblina e horda elite
-- Objetivos de sobrevivencia de 10, 15 ou 30 minutos
-- Modo infinito apos vencer
+```
+game-survival/
+├── godot/              ← Projeto Godot 4 atual (jogo migrado)
+├── main.py             ← Protótipo original em pygame (mantido como referência)
+└── README.md           ← este arquivo
+```
 
-## Mapa atual
+## 🚀 Como rodar
 
-- Tilemap real em grade 32x32 desenhando apenas tiles visiveis pela camera
-- Visual sem imagens externas: o jogo usa sprites, tiles, objetos e efeitos procedurais desenhados no `main.py`
-- Mapa maior em bioma unico de gramado/floresta
-- Gramado inicial com grama, flores e folhas procedurais
-- O mapa inteiro usa variacoes procedurais de grama, flores, folhas e arvores
-- Divisorias visuais largas entre as fases do mapa
-- Obstaculos com colisao: arvores, pedras, pilares e cactos
-- Objetos quebraveis removidos do mapa
-- Altares espalhados pelo mapa com efeitos especiais
-- Mini-mapa com jogador, inimigos, obstaculos, altares e baus
-- Camera shake em dano, explosoes e morte de chefes
+### Opção rápida — Atalho na Área de Trabalho
 
-## Visual e som atual
+Já existe um atalho **"Noite dos Sobreviventes"** na sua Área de Trabalho com o ícone do diorama.
+Basta dar **2 cliques** e o jogo abre.
 
-- Sprites procedurais para jogador, gemas, baus, objetos e obstaculos
-- Sprites procedurais para jogador e inimigos
-- Sprites reais selecionados para armas, projeteis, baus, altares, portais, itens e UI de upgrades
-- Silhuetas diferentes para cada tipo de inimigo
-- Animacao simples de movimento do jogador e flutuacao das gemas
-- Efeitos melhores para explosoes, raios, impactos e dano
-- Numeros de dano em ataques fortes
-- Musica de fundo sintetizada no proprio jogo
-- Sons para tiro, dano, level up, coleta de XP, baus, explosoes, chefes e evolucao
-
-## Visual e som avancado atual
-
-- Tela inicial com lua procedural e particulas orbitais
-- Trilha de floresta e trilha especial de chefe
-- Sons diferentes por arma
-- Efeitos visuais de evolucao, lendario, explosao, raio e morte
-- Particulas ambientais de floresta
-- Feedback visual especial para upgrades lendarios
-- Vinheta e indicador de trilha no HUD
-
-## Progressao atual
-
-- Menu inicial com acesso a partida, loja, personagens e conquistas
-- Moedas ganhas ao derrotar inimigos, chefes, sobreviver e vencer
-- Save local em `savegame.json`
-- Loja permanente: vida, dano, ganho de XP, velocidade e sorte
-- Personagens desbloqueaveis: Cacador, Guardiao, Arcanista, Ladina, Alquimista e Monge
-- Conquistas com recompensa em moedas
-- Armas desbloqueadas por desafios: Machado, Bomba, Drone, Raio, Foice, Corrente, Fogo e Livro
-- Estatisticas pos-partida com moedas, KOs e dano por arma
-
-## Progressao avancada atual
-
-- Arvore de talentos comprada com pontos de prestigio
-- Sistema de prestigio com reset parcial e bonus permanente
-- Codex de inimigos, armas e reliquias vistos
-- Ranking local das melhores partidas
-- Historico das ultimas 10 partidas
-- Objetivos por personagem com recompensa dedicada
-- Tres slots de save separados
-- Recompensas unicas por completar metas de 10, 15 e 30 minutos
-
-## Sistemas ambiciosos atuais
-
-- Inventario de reliquias durante a partida
-- Sistema de sinergias de build entre armas
-- Modificadores de mapa por partida
-- Mercador NPC que vende upgrade especial
-- Portais para arenas especiais temporarias
-- Pet/companheiro que orbita e atira sozinho
-- Eventos narrativos leves durante a partida
-- Replay estatistico no resumo final
-
-## Conteudo atual
-
-- Novas armas de conteudo: Lanca, Livro, Fogo, Foice e Corrente
-- Chefes variantes: chefe base, bruxo e gelido
-- Mini-chefes entre os chefes principais
-- Reliquias raras no pool de upgrades
-- Eventos raros de arena: Eclipse e Tesouro errante
-- Objetivos por personagem com recompensa em moedas
-- Novos desbloqueios ligados a KOs, chefes, evolucao e sobrevivencia
-
-## Polimento atual
-
-- Tela de pausa com continuar, reiniciar e voltar ao menu
-- Opcoes de volume para musica, efeitos e mudo
-- Dificuldade selecionavel: facil, normal, dificil e infernal
-- Tutorial inicial rapido acessivel pelo menu
-- Tela de novidades liberadas apos a partida
-- Indicador de armas prontas para evoluir
-- Reroll e banimento de upgrades durante a escolha
-- Auto-pause quando a janela perde foco
-
-## Rodar local
+Se o atalho não existe ou se você quiser regenerar:
 
 ```powershell
-cd "$env:USERPROFILE\Downloads\Linux\GAMES"
+powershell -ExecutionPolicy Bypass -File "godot\criar-atalho.ps1"
+```
+
+### Opção 2 — Via .bat
+
+Dá 2 cliques em [godot/RODAR-JOGO.bat](godot/RODAR-JOGO.bat).
+
+### Opção 3 — Via terminal
+
+```powershell
+godot --path "godot"
+```
+
+> Se `godot` não for reconhecido, abra um novo PowerShell — o `winget` atualiza o `PATH` só em terminais novos.
+
+### Opção 4 — Pelo editor Godot
+
+1. Abre Godot 4.6+
+2. Abre o `godot/project.godot`
+3. Aperta **F5**
+
+## 🎮 Controles
+
+- **WASD** ou **setas**: mover
+- **Mouse**: mira automática (não precisa clicar)
+- **ESC**: pausar / voltar ao menu
+
+## 🎯 Conteúdo do jogo
+
+- **3 mapas** com biomas únicos: Floresta Sombria · Cemitério Maldito · Ermos do Crepúsculo
+- **6 personagens** com stats próprios (Caçador, Arcanista, Guardião, Ladina, Alquimista, Monge)
+- **3 armas iniciais** + sistema data-driven (basta criar um `.tres` pra adicionar mais)
+- **10 inimigos** com 5 padrões de IA (chase, kite, explode, summon, boss)
+- **3 chefes** rotacionando a cada 2 minutos
+- **6 passivas** e **5 relíquias** com 4 raridades (comum/raro/épico/lendário)
+- **3 sinergias** automáticas entre armas
+- **4 eventos de arena**: Chuva de Meteoros · Neblina · Horda Elite · Chuva de Gemas
+- **4 modificadores de mapa** aleatórios por partida
+- **Pet** companheiro que atira sozinho · **Mercador** NPC
+- **Meta-progressão completa**: Loja permanente · Talentos com prestige · Conquistas · Codex · Ranking · Histórico
+
+## 🏗️ Arquitetura (nível estúdio)
+
+Princípios aplicados:
+
+- **Data-driven** — armas, inimigos, mapas, personagens, passivas, relíquias são todos `Resource (.tres)` editáveis no inspector do Godot, sem mexer em código
+- **EventBus pattern** — comunicação por signals globais, zero acoplamento entre sistemas
+- **Cena por entidade** — cada arma/inimigo/UI é uma `.tscn` independente e reutilizável
+- **Theme central** — paleta de cores em `scripts/utils/Theme.gd`
+- **Save versionado** — 3 slots, schema com migração entre versões
+- **i18n preparado** — textos via `tr("KEY")`, fácil PT/EN/ES
+- **CI/CD** — GitHub Actions valida + builda Windows + Web automaticamente
+
+8 autoloads centralizam estado: `GameManager`, `EventBus`, `SaveSystem`, `AudioManager`,
+`ProgressionManager`, `UnlockManager`, `MapRegistry`, `CharacterRegistry`.
+
+Documentação detalhada: [godot/docs/ARCHITECTURE.md](godot/docs/ARCHITECTURE.md)
+
+## 📦 Estrutura do projeto Godot
+
+```
+godot/
+├── project.godot
+├── icon.svg / icon.ico
+├── assets/                         (sprites, audio, fonts, shaders)
+├── scenes/
+│   ├── main/                       Main.tscn, GameWorld.tscn
+│   ├── player/                     Player.tscn + sprite
+│   ├── enemies/                    Enemy base (instanciado por EnemyData)
+│   ├── projectiles/                Projectile.tscn
+│   ├── pickups/                    Gem.tscn
+│   ├── world/                      WorldRenderer, Pet, Merchant
+│   ├── effects/                    DamageNumber
+│   └── ui/
+│       ├── menu/                   MainMenu + 7 componentes modulares
+│       ├── hud/                    GameHUD, Minimap, WeaponBar
+│       ├── upgrade/                UpgradeScreen, UpgradeCard
+│       └── screens/                Shop, Characters, Talents, etc (8 telas)
+├── scripts/
+│   ├── autoload/                   8 singletons globais
+│   ├── systems/                    WeaponSystem, SpawnDirector, UpgradeSystem, etc
+│   ├── data/                       Resources tipadas (WeaponData, EnemyData, ...)
+│   └── utils/                      Theme, Rarity
+├── resources/                      .tres editáveis (mapas, armas, inimigos, etc)
+├── localization/                   pt_BR.csv, en.csv
+├── tests/                          gdUnit4
+├── docs/                           ARCHITECTURE.md
+└── .github/workflows/              CI: build Windows + Web + deploy Pages
+```
+
+## 🛠️ Build para distribuição
+
+### Windows (.exe standalone)
+
+```powershell
+godot --headless --path godot --export-release "Windows Desktop" ../builds/windows/NoiteDosSobreviventes.exe
+```
+
+### Web (HTML5)
+
+```powershell
+godot --headless --path godot --export-release "Web" ../builds/web/index.html
+```
+
+> Primeira vez precisa baixar os **Export Templates** no editor Godot
+> (Project → Export → Manage Export Templates → Download).
+
+## 🤖 CI/CD
+
+[.github/workflows/build.yml](godot/.github/workflows/build.yml) faz automaticamente a cada push:
+
+1. **Validate** — confere que todos os scripts parseiam sem erro
+2. **Build Windows** — gera `.exe`
+3. **Build Web** — gera HTML5
+4. **Deploy** — publica build Web no GitHub Pages
+
+## 📝 Versão Python original
+
+O arquivo [main.py](main.py) é o protótipo original em pygame (~3968 linhas).
+Mantido como referência da migração — não é mais o jogo principal.
+
+Pra rodar o protótipo antigo:
+
+```powershell
 py -3.12 -m pip install -r requirements.txt
 py -3.12 main.py
 ```
-
-Se o comando `py` ainda nao existir, instale Python primeiro:
-
-```powershell
-winget install -e --id Python.Python.3.12
-```
-
-Depois feche e abra o PowerShell novamente.
-
-Alternativa quando `python` e `pip` ja estao configurados no PATH:
-
-```powershell
-pip install -r requirements.txt
-python main.py
-```
-
-## Build web com Pygbag
-
-```powershell
-pygbag .
-```
-
-Depois abra o endereco local mostrado pelo Pygbag no navegador.
-
-## Assets
-
-O projeto nao depende de imagens externas no momento; a pasta `assets/` pode ficar vazia.

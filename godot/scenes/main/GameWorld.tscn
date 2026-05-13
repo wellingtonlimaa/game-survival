@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/main/GameWorld.gd" id="1_gw"]
+
+[node name="GameWorld" type="Node"]
+script = ExtResource("1_gw")
+
+[node name="WorldRoot" type="Node2D" parent="."]
+
+[node name="HUDRoot" type="CanvasLayer" parent="."]
+
+[node name="UIRoot" type="CanvasLayer" parent="."]
+layer = 10

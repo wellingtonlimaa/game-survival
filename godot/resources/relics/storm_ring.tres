@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+key = "storm_ring"
+display_name = "Anel da Tempestade"
+description = "Concede a arma Facas Rasgadoras de imediato."
+icon_color = Color(0.392, 0.808, 0.929, 1.0)
+grants_weapon = "knife"

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="MapData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/MapData.gd" id="1_mapdata"]
+
+[resource]
+script = ExtResource("1_mapdata")
+key = "forest"
+display_name = "Floresta Sombria"
+description = "Floresta antiga sob a lua. Vagalumes guiam o caminho entre ruínas e o lago profundo."
+world_width = 3000
+world_height = 2100
+tile_size = 32
+ground_color = Color(0.165, 0.247, 0.157, 1.0)
+ground_variant_color = Color(0.118, 0.196, 0.114, 1.0)
+detail_color = Color(0.220, 0.314, 0.165, 1.0)
+border_color = Color(0.043, 0.067, 0.043, 1.0)
+fog_color = Color(0.039, 0.043, 0.078, 0.0)
+obstacle_count = 130
+obstacle_kinds = PackedStringArray("tree", "tree", "tree", "stone")
+obstacle_palette = PackedColorArray(0.075, 0.118, 0.071, 1.0, 0.094, 0.149, 0.090, 1.0, 0.110, 0.165, 0.094, 1.0)
+has_lake = true
+has_ruin = true
+has_boss_clearing = true
+lake_color = Color(0.094, 0.220, 0.345, 1.0)
+ruin_color = Color(0.353, 0.337, 0.396, 1.0)
+altar_count = 5
+ambient_color = Color(1.0, 0.882, 0.502, 0.45)
+ambient_count = 36
+ambient_speed = 0.45
+music_track = "forest"
