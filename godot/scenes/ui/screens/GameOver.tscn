@@ -168,6 +168,26 @@ theme_override_font_sizes/font_size = 16
 text = "Bônus vitória: +120"
 horizontal_alignment = 1
 
+[node name="MetaXpLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.553, 0.871, 0.792, 1)
+theme_override_font_sizes/font_size = 16
+text = "+0 XP"
+horizontal_alignment = 1
+
+[node name="LevelUpLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0.043, 0.035, 0.078, 1)
+theme_override_font_sizes/font_size = 20
+text = "🎉 Subiu para o nível X!"
+horizontal_alignment = 1
+
 [node name="MenuButton" type="Button" parent="Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2

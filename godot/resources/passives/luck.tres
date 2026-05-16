@@ -8,5 +8,5 @@ key = "luck"
 display_name = "Marca da Sorte"
 description = "Aumenta sua sorte para upgrades raros."
 icon_color = Color(1.0, 0.949, 0.42, 1.0)
-max_level = 5
-luck_per_level = 0.18
+max_level = 3
+luck_per_level = 0.27

@@ -6,6 +6,7 @@ const GAME_HUD_SCENE := preload("res://scenes/ui/hud/GameHUD.tscn")
 const DAMAGE_NUMBER_SCENE := preload("res://scenes/effects/DamageNumber.tscn")
 const UPGRADE_SCREEN_SCENE := preload("res://scenes/ui/upgrade/UpgradeScreen.tscn")
 const GAME_OVER_SCENE := preload("res://scenes/ui/screens/GameOver.tscn")
+const PAUSE_MENU_SCENE := preload("res://scenes/ui/screens/PauseMenu.tscn")
 const WorldGeneratorScript := preload("res://scripts/systems/WorldGenerator.gd")
 const WeaponSystemScript := preload("res://scripts/systems/WeaponSystem.gd")
 const SpawnDirectorScript := preload("res://scripts/systems/SpawnDirector.gd")
@@ -36,6 +37,7 @@ var spawn_director: Node = null
 var upgrade_system: Node = null
 var upgrade_screen: Control = null
 var game_over_screen: Control = null
+var pause_menu: Control = null
 
 var time_alive: float = 0.0
 var kills: int = 0
@@ -79,8 +81,39 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		_back_to_menu()
+	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("ui_pause"):
+		_toggle_pause_menu()
+
+
+func _toggle_pause_menu() -> void:
+	if run_finalized:
+		return
+	if GameManager.state == GameManager.GameState.UPGRADE:
+		return
+	if pause_menu != null:
+		_close_pause_menu()
+	else:
+		_open_pause_menu()
+
+
+func _open_pause_menu() -> void:
+	if pause_menu != null:
+		return
+	GameManager.change_state(GameManager.GameState.PAUSED)
+	get_tree().paused = true
+	pause_menu = PAUSE_MENU_SCENE.instantiate()
+	ui_root.add_child(pause_menu)
+	pause_menu.resume_pressed.connect(_close_pause_menu)
+	pause_menu.back_to_menu_pressed.connect(_back_to_menu)
+
+
+func _close_pause_menu() -> void:
+	if pause_menu == null:
+		return
+	pause_menu.queue_free()
+	pause_menu = null
+	get_tree().paused = false
+	GameManager.change_state(GameManager.GameState.PLAYING)
 
 
 func _load_map() -> void:
@@ -303,6 +336,11 @@ func _finalize_run(won: bool) -> void:
 	game_over_screen = GAME_OVER_SCENE.instantiate()
 	game_over_screen.process_mode = Node.PROCESS_MODE_ALWAYS
 	ui_root.add_child(game_over_screen)
+	stats["meta_xp"] = int(result.get("meta_xp", 0))
+	stats["new_meta_level"] = int(result.get("new_meta_level", 1))
+	stats["leveled_up"] = bool(result.get("leveled_up", false))
+	stats["level_coin_bonus"] = int(result.get("level_coin_bonus", 0))
+	stats["unlocks"] = result.get("unlocks", [])
 	game_over_screen.setup(stats, int(result.get("coin_total", 0)), int(result.get("bonus", 0)), won)
 	game_over_screen.back_to_menu.connect(_back_to_menu)
 

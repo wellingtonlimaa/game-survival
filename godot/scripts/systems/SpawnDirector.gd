@@ -41,7 +41,7 @@ func configure(p_player: Node2D, enemies_node: Node, projectiles_node: Node, pic
 	pickups_container = pickups_node
 	map = map_data
 	time_alive = 0.0
-	spawn_timer = 1.0
+	spawn_timer = 3.0
 	boss_timer = 120.0
 	miniboss_timer = 75.0
 
@@ -70,12 +70,14 @@ func tick(delta: float) -> void:
 
 
 func _spawn_interval() -> float:
-	return max(0.12, 0.74 - time_alive * 0.0022)
+	# Comeca em 2.5s entre spawns, vai reduzindo gradualmente ate ~0.30s aos 5min
+	return max(0.30, 2.5 - time_alive * 0.0073)
 
 
 func _spawn_amount() -> int:
-	var base: int = 1 + int(time_alive / 30.0) / 4
-	if time_alive > 180.0:
+	# Comeca em 1 inimigo por spawn; +1 a cada 75s; +1 extra apos 4min
+	var base: int = 1 + int(time_alive / 75.0)
+	if time_alive > 240.0:
 		base += 1
 	return base
 

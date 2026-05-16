@@ -4,10 +4,19 @@ const RarityScript := preload("res://scripts/utils/Rarity.gd")
 const SynergySystemScript := preload("res://scripts/systems/SynergySystem.gd")
 
 const WEAPON_PATHS := {
-	"wand":  "res://resources/weapons/wand.tres",
-	"knife": "res://resources/weapons/knife.tres",
-	"orbit": "res://resources/weapons/orbit.tres",
+	"wand":         "res://resources/weapons/wand.tres",
+	"knife":        "res://resources/weapons/knife.tres",
+	"orbit":        "res://resources/weapons/orbit.tres",
+	"spear":        "res://resources/weapons/spear.tres",
+	"shotgun":      "res://resources/weapons/shotgun.tres",
+	"fire_staff":   "res://resources/weapons/fire_staff.tres",
+	"arrow_storm":  "res://resources/weapons/arrow_storm.tres",
+	"holy_shield":  "res://resources/weapons/holy_shield.tres",
+	"comet":        "res://resources/weapons/comet.tres",
+	"fury":         "res://resources/weapons/fury.tres",
 }
+
+const MAX_POWERS := 3
 
 const PASSIVE_PATHS := {
 	"move":     "res://resources/passives/move.tres",
@@ -26,7 +35,7 @@ const RELIC_PATHS := {
 	"giant_belt":    "res://resources/relics/giant_belt.tres",
 }
 
-const MAX_WEAPON_LEVEL := 8
+const MAX_WEAPON_LEVEL := 3
 
 var player: Node2D = null
 var weapon_system: Node = null
@@ -55,8 +64,6 @@ func roll_choices(chest: bool = false) -> Array:
 		var entry: Dictionary = pool[i].duplicate()
 		entry["rarity"] = RarityScript.roll(luck, chest)
 		choices.append(entry)
-	# Prioriza evoluções se aparecem em jogo
-	_ensure_evolutions_priority(choices, pool, luck)
 	return choices
 
 
@@ -90,40 +97,57 @@ func _build_pool() -> Array:
 		if banished.has("weapon_level:%s" % key):
 			continue
 		if slot.level >= MAX_WEAPON_LEVEL:
-			pool.append({
-				"kind": "weapon_evolve",
-				"key": key,
-				"title": "Evoluir %s" % slot.data.display_name,
-				"description": "Liberta o verdadeiro poder da arma.",
-				"color": Color(1.0, 0.776, 0.298, 1.0),
-			})
-		else:
-			pool.append({
-				"kind": "weapon_level",
-				"key": key,
-				"title": "+1 %s" % slot.data.display_name,
-				"description": "Aumenta dano, projéteis e reduz recarga.",
-				"color": slot.data.icon_color,
-			})
+			# Arma no nivel maximo: nao oferece mais upgrade nem evolucao
+			continue
+		var next_level: int = slot.level + 1
+		pool.append({
+			"kind": "weapon_level",
+			"key": key,
+			"title": "%s (Nv %d)" % [slot.data.display_name, next_level],
+			"description": "Aumenta projéteis, dano e reduz recarga.",
+			"color": slot.data.icon_color,
+		})
 
-	# Armas novas (até 3 armas totais por enquanto)
+	# Armas e Poderes nao equipados
+	# Armas (projectile): apenas uma — oferece "Trocar"
+	# Poderes (orbit/aura): podem acumular ate MAX_POWERS
 	var equipped_keys: Array = []
+	var has_weapon: bool = false
+	var power_count: int = 0
 	for slot in weapon_system.slots:
 		equipped_keys.append(slot.data.key)
-	if equipped_keys.size() < 6:
-		for key in WEAPON_PATHS.keys():
-			if equipped_keys.has(key):
-				continue
-			if banished.has("weapon_new:%s" % key):
-				continue
-			var weapon_res: Resource = load(WEAPON_PATHS[key])
-			pool.append({
-				"kind": "weapon_new",
-				"key": key,
-				"title": "Nova: %s" % weapon_res.display_name,
-				"description": weapon_res.description,
-				"color": weapon_res.icon_color,
-			})
+		if slot.data.is_power():
+			power_count += 1
+		else:
+			has_weapon = true
+	for key in WEAPON_PATHS.keys():
+		if equipped_keys.has(key):
+			continue
+		if banished.has("weapon_new:%s" % key):
+			continue
+		var weapon_res: Resource = load(WEAPON_PATHS[key])
+		var is_power: bool = weapon_res.is_power()
+		# Bloqueia novos poderes se ja tem o maximo
+		if is_power and power_count >= MAX_POWERS:
+			continue
+		var title: String
+		var desc: String
+		if is_power:
+			title = "Poder: %s" % weapon_res.display_name
+			desc = weapon_res.description
+		elif has_weapon:
+			title = "Trocar arma: %s" % weapon_res.display_name
+			desc = "%s\n(substitui sua arma atual)" % weapon_res.description
+		else:
+			title = "Nova arma: %s" % weapon_res.display_name
+			desc = weapon_res.description
+		pool.append({
+			"kind": "weapon_new",
+			"key": key,
+			"title": title,
+			"description": desc,
+			"color": weapon_res.icon_color,
+		})
 
 	# Passivas (até max_level)
 	for key in PASSIVE_PATHS.keys():

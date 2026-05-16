@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "fury"
+display_name = "Fúria do Vento"
+description = "Tornado em volta do herói. Dano em área constante em todos os inimigos próximos."
+icon_color = Color(0.722, 0.875, 0.953, 1.0)
+behavior = 3
+cooldown = 0.45
+damage = 6.0
+projectile_count = 1
+projectile_speed = 0.0
+projectile_lifetime = 0.0
+projectile_radius = 0.0
+pierce = 0
+spread_radians = 0.0
+knockback = 90.0
+orbit_radius = 95.0
+orbit_speed = 0.0
+projectile_color = Color(0.882, 0.949, 1.0, 1.0)
+projectile_kind = "bolt"
+sound_key = "shoot"

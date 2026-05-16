@@ -23,7 +23,7 @@ var xp_mult: float = 1.0
 var pickup_radius: float = 60.0
 var level: int = 1
 var xp: float = 0.0
-var xp_to_next: float = 16.0
+var xp_to_next: float = 28.0
 var invuln_timer: float = 0.0
 
 @onready var sprite: Node2D = $Sprite
@@ -61,7 +61,7 @@ func _on_xp_gained(amount: float) -> void:
 	while xp >= xp_to_next:
 		xp -= xp_to_next
 		level += 1
-		xp_to_next = round(xp_to_next * 1.28 + 7)
+		xp_to_next = round(xp_to_next * 1.40 + 10)
 		hp = min(max_hp, hp + max(8.0, max_hp * 0.08))
 		EventBus.player_level_up.emit(level)
 		hp_changed.emit(hp, max_hp)

@@ -5,7 +5,14 @@ enum Behavior {
 	PROJECTILE_AIM_CLOSEST,   # ex: wand
 	PROJECTILE_AIM_DIRECTION, # ex: knife (mouse aim)
 	ORBIT_PLAYER,             # ex: orbit / book
+	AURA_PULSE,               # ex: fury tornado (dano em area periodico)
 }
+
+
+# Powers (orbit + aura) podem coexistir com armas e entre si.
+# Apenas armas (projectile_*) substituem outras armas.
+func is_power() -> bool:
+	return behavior == Behavior.ORBIT_PLAYER or behavior == Behavior.AURA_PULSE
 
 @export var key: String = ""
 @export var display_name: String = ""
@@ -37,12 +44,12 @@ enum Behavior {
 
 
 func cooldown_at_level(level: int) -> float:
-	return cooldown * pow(0.94, max(0, level - 1))
+	return cooldown * pow(0.90, max(0, level - 1))
 
 
 func damage_at_level(level: int) -> float:
-	return damage * (1.0 + 0.18 * max(0, level - 1))
+	return damage * (1.0 + 0.30 * max(0, level - 1))
 
 
 func projectile_count_at_level(level: int) -> int:
-	return projectile_count + (level - 1) / 3
+	return projectile_count + max(0, level - 1)

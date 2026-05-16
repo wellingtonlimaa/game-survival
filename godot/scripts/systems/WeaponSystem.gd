@@ -4,10 +4,19 @@ const PROJECTILE_SCENE := preload("res://scenes/projectiles/Projectile.tscn")
 const WeaponDataScript := preload("res://scripts/data/WeaponData.gd")
 
 const WEAPON_PATHS := {
-	"wand":   "res://resources/weapons/wand.tres",
-	"knife":  "res://resources/weapons/knife.tres",
-	"orbit":  "res://resources/weapons/orbit.tres",
+	"wand":         "res://resources/weapons/wand.tres",
+	"knife":        "res://resources/weapons/knife.tres",
+	"orbit":        "res://resources/weapons/orbit.tres",
+	"spear":        "res://resources/weapons/spear.tres",
+	"shotgun":      "res://resources/weapons/shotgun.tres",
+	"fire_staff":   "res://resources/weapons/fire_staff.tres",
+	"arrow_storm":  "res://resources/weapons/arrow_storm.tres",
+	"holy_shield":  "res://resources/weapons/holy_shield.tres",
+	"comet":        "res://resources/weapons/comet.tres",
+	"fury":         "res://resources/weapons/fury.tres",
 }
+
+const MAX_POWERS := 3
 
 var player: Node2D = null
 var enemies_container: Node = null
@@ -33,15 +42,44 @@ func equip(key: String) -> void:
 	if not WEAPON_PATHS.has(key):
 		return
 	var data: Resource = load(WEAPON_PATHS[key])
+	# Ja possui essa arma/poder? sobe nivel
 	for slot in slots:
 		if slot.data.key == key:
 			slot.level += 1
 			return
+	# Armas substituem armas. Poderes acumulam (ate o limite).
+	if data.is_power():
+		if _count_powers() >= MAX_POWERS:
+			return
+	else:
+		_clear_weapon_slots()
 	var new_slot := WeaponSlot.new()
 	new_slot.data = data
 	new_slot.timer = 0.0
 	slots.append(new_slot)
 	_initial_setup(new_slot)
+
+
+func _count_powers() -> int:
+	var n: int = 0
+	for slot in slots:
+		if slot.data.is_power():
+			n += 1
+	return n
+
+
+func _clear_weapon_slots() -> void:
+	# Remove apenas as armas (mantem poderes ja equipados)
+	var keep: Array = []
+	for slot in slots:
+		if slot.data.is_power():
+			keep.append(slot)
+		else:
+			for orb in slot.orbit_projectiles:
+				if is_instance_valid(orb):
+					orb.queue_free()
+			slot.orbit_projectiles.clear()
+	slots = keep
 
 
 func _initial_setup(slot: WeaponSlot) -> void:
@@ -68,6 +106,30 @@ func _fire_weapon(slot: WeaponSlot) -> void:
 			_fire_aim_direction(slot)
 		WeaponDataScript.Behavior.ORBIT_PLAYER:
 			_spawn_orbit_projectiles(slot)
+		WeaponDataScript.Behavior.AURA_PULSE:
+			_fire_aura_pulse(slot)
+
+
+func _fire_aura_pulse(slot: WeaponSlot) -> void:
+	if enemies_container == null:
+		return
+	# Raio cresce com o nivel (reutilizamos orbit_radius como raio do tornado)
+	var radius: float = slot.data.orbit_radius * (1.0 + 0.20 * max(0, slot.level - 1))
+	var radius_sq: float = radius * radius
+	var damage: float = slot.data.damage_at_level(slot.level) * _player_dmg_mult()
+	var hit_count: int = 0
+	for enemy in enemies_container.get_children():
+		if not (enemy is Node2D) or not is_instance_valid(enemy):
+			continue
+		var to_enemy: Vector2 = enemy.global_position - player.global_position
+		if to_enemy.length_squared() > radius_sq:
+			continue
+		if enemy.has_method("take_damage"):
+			enemy.take_damage(damage, slot.data.knockback, to_enemy.normalized(), slot.data.key)
+			hit_count += 1
+	# Feedback visual minimo: pequeno flash baseado em quantos foram atingidos
+	if hit_count > 0:
+		EventBus.flash_requested.emit(slot.data.projectile_color, 0.08)
 
 
 func _fire_aim_closest(slot: WeaponSlot) -> void:

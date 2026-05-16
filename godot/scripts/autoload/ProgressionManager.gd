@@ -22,6 +22,48 @@ const TALENTS := {
 }
 
 
+const META_UNLOCKS := {
+	2:  "Loja",
+	5:  "Talentos",
+	10: "VIP",
+}
+
+
+func meta_xp_to_next(level: int) -> int:
+	return 100 + (level - 1) * 80
+
+
+func add_meta_xp(amount: int) -> Dictionary:
+	var xp: int = int(SaveSystem.get_value("player_xp", 0)) + max(0, amount)
+	var level: int = int(SaveSystem.get_value("player_level", 1))
+	var start_level: int = level
+	var coin_bonus: int = 0
+	var unlocks: Array = []
+	while xp >= meta_xp_to_next(level):
+		xp -= meta_xp_to_next(level)
+		level += 1
+		coin_bonus += 25 * level
+		if META_UNLOCKS.has(level):
+			unlocks.append(String(META_UNLOCKS[level]))
+	SaveSystem.set_value("player_xp", xp)
+	SaveSystem.set_value("player_level", level)
+	if coin_bonus > 0:
+		SaveSystem.add_coins(coin_bonus)
+	var leveled: bool = level > start_level
+	if leveled:
+		SaveSystem.set_value("pending_level_announce", level)
+		if not unlocks.is_empty():
+			SaveSystem.set_value("pending_unlocks_announce", unlocks)
+	return {
+		"gained_xp": max(0, amount),
+		"new_level": level,
+		"start_level": start_level,
+		"leveled_up": leveled,
+		"coin_bonus": coin_bonus,
+		"unlocks": unlocks,
+	}
+
+
 func upgrade_level(key: String) -> int:
 	var dict: Dictionary = SaveSystem.get_value("permanent_upgrades", {})
 	return int(dict.get(key, 0))
