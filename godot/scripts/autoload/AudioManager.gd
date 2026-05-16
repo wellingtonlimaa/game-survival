@@ -5,18 +5,23 @@ const SFX_BUS := "SFX"
 
 var sfx_pool: Array[AudioStreamPlayer] = []
 var music_player: AudioStreamPlayer
+var music_tween: Tween
 var last_played_at: Dictionary = {}
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	music_player = AudioStreamPlayer.new()
 	music_player.bus = "Master"
+	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.volume_db = linear_to_db(_clamp_volume(SaveSystem.get_value("music_volume", 0.5)))
 	add_child(music_player)
 
 	for i in range(8):
 		var sfx := AudioStreamPlayer.new()
 		sfx.bus = "Master"
+		sfx.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(sfx)
 		sfx_pool.append(sfx)
 
@@ -55,12 +60,23 @@ func play_music(stream: AudioStream, fade_seconds: float = 0.6) -> void:
 		target_db = -80.0
 	music_player.volume_db = -40.0
 	music_player.play()
-	var tween := create_tween()
-	tween.tween_property(music_player, "volume_db", target_db, fade_seconds)
+	_kill_music_tween()
+	music_tween = create_tween()
+	music_tween.tween_property(music_player, "volume_db", target_db, fade_seconds)
+
+
+func stop_music(fade_seconds: float = 0.4) -> void:
+	if not music_player.playing:
+		return
+	_kill_music_tween()
+	music_tween = create_tween()
+	music_tween.tween_property(music_player, "volume_db", -80.0, fade_seconds)
+	music_tween.tween_callback(music_player.stop)
 
 
 func set_music_volume(volume: float) -> void:
 	SaveSystem.set_value("music_volume", _clamp_volume(volume))
+	_kill_music_tween()
 	if SaveSystem.get_value("muted", false):
 		music_player.volume_db = -80.0
 	else:
@@ -73,7 +89,14 @@ func set_sfx_volume(volume: float) -> void:
 
 func set_muted(muted: bool) -> void:
 	SaveSystem.set_value("muted", muted)
+	_kill_music_tween()
 	if muted:
 		music_player.volume_db = -80.0
 	else:
 		music_player.volume_db = linear_to_db(max(_clamp_volume(SaveSystem.get_value("music_volume", 0.5)), 0.0001))
+
+
+func _kill_music_tween() -> void:
+	if music_tween != null and music_tween.is_valid():
+		music_tween.kill()
+	music_tween = null

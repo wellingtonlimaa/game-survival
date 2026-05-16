@@ -118,7 +118,27 @@ static func finalize(stats: Dictionary) -> Dictionary:
 
 	UnlockManager.check_unlocks_after_run()
 
+	var meta_xp: int = _compute_meta_xp(kills, time_alive, boss_kills, evolved_weapons, won)
+	var level_result: Dictionary = ProgressionManager.add_meta_xp(meta_xp)
+
 	return {
 		"coin_total": coin_total,
 		"bonus": 120 if won else 0,
+		"meta_xp": meta_xp,
+		"new_meta_level": int(level_result.get("new_level", 1)),
+		"start_meta_level": int(level_result.get("start_level", 1)),
+		"leveled_up": bool(level_result.get("leveled_up", false)),
+		"level_coin_bonus": int(level_result.get("coin_bonus", 0)),
+		"unlocks": level_result.get("unlocks", []),
 	}
+
+
+static func _compute_meta_xp(kills: int, time_alive: int, boss_kills: int, evolved: int, won: bool) -> int:
+	var xp: int = 0
+	xp += kills
+	xp += time_alive / 2
+	xp += boss_kills * 25
+	xp += evolved * 50
+	if won:
+		xp += 120
+	return xp

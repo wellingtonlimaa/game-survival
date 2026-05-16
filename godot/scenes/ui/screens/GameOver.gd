@@ -24,3 +24,26 @@ func setup(stats: Dictionary, coin_total: int, bonus: int, won: bool) -> void:
 		%BonusLabel.visible = true
 	else:
 		%BonusLabel.visible = false
+
+	var meta_xp: int = int(stats.get("meta_xp", 0))
+	if meta_xp > 0:
+		%MetaXpLabel.text = "+%d XP" % meta_xp
+		%MetaXpLabel.visible = true
+	else:
+		%MetaXpLabel.visible = false
+
+	if bool(stats.get("leveled_up", false)):
+		var new_lvl: int = int(stats.get("new_meta_level", 1))
+		var coin_bonus: int = int(stats.get("level_coin_bonus", 0))
+		var lines: PackedStringArray = []
+		if coin_bonus > 0:
+			lines.append("🎉 Subiu para o nível %d! (+%d 🪙)" % [new_lvl, coin_bonus])
+		else:
+			lines.append("🎉 Subiu para o nível %d!" % new_lvl)
+		var unlocks: Array = stats.get("unlocks", [])
+		for u in unlocks:
+			lines.append("🔓 %s desbloqueado!" % String(u))
+		%LevelUpLabel.text = "\n".join(lines)
+		%LevelUpLabel.visible = true
+	else:
+		%LevelUpLabel.visible = false

@@ -15,6 +15,8 @@ var _open := false
 
 
 func _ready() -> void:
+	popup_panel.top_level = true
+	popup_panel.z_index = 100
 	popup_panel.visible = false
 	popup_panel.modulate.a = 0.0
 	popup_panel.scale = Vector2(0.85, 0.85)
@@ -40,6 +42,8 @@ func refresh_badges() -> void:
 func _toggle() -> void:
 	_open = not _open
 	if _open:
+		var btn_rect := toggle_button.get_global_rect()
+		popup_panel.global_position = Vector2(btn_rect.position.x + btn_rect.size.x + 10.0, btn_rect.position.y)
 		popup_panel.visible = true
 		var tween := create_tween().set_parallel(true)
 		tween.tween_property(popup_panel, "modulate:a", 1.0, 0.15)

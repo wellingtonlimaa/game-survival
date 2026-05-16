@@ -16,6 +16,8 @@ const SCREEN_PATHS := {
 	"tutorial":     "res://scenes/ui/screens/Tutorial.tscn",
 }
 
+const MENU_MUSIC_PATH := "res://assets/audio/music/ira.mp3"
+
 
 func _ready() -> void:
 	GameManager.change_state(GameManager.GameState.MENU)
@@ -26,8 +28,26 @@ func _ready() -> void:
 	start_button.start_pressed.connect(_on_start_pressed)
 	bottom_nav.tab_pressed.connect(_on_tab_pressed)
 
+	_play_menu_music()
+
 
 func _refresh_subtitle() -> void:
+	var pending_level: int = int(SaveSystem.get_value("pending_level_announce", 0))
+	if pending_level > 0:
+		var unlocks: Array = SaveSystem.get_value("pending_unlocks_announce", [])
+		if unlocks.is_empty():
+			subtitle.text = "✨ Nível %d alcançado!" % pending_level
+		else:
+			var names: PackedStringArray = []
+			for u in unlocks:
+				names.append(String(u))
+			subtitle.text = "✨ Nível %d · 🔓 %s" % [pending_level, ", ".join(names)]
+		subtitle.add_theme_color_override("font_color", Color(1, 0.776, 0.298, 1))
+		SaveSystem.set_value("pending_level_announce", 0)
+		SaveSystem.set_value("pending_unlocks_announce", [])
+		return
+
+	subtitle.remove_theme_color_override("font_color")
 	var best := int(SaveSystem.get_value("best_time", 0))
 	if best <= 0:
 		subtitle.text = "Nenhuma vitória registrada"
@@ -81,3 +101,30 @@ func _open_screen(key: String) -> void:
 	if path == "":
 		return
 	get_tree().change_scene_to_file(path)
+
+
+func _play_menu_music() -> void:
+	var stream: AudioStream = null
+	if ResourceLoader.exists(MENU_MUSIC_PATH):
+		stream = load(MENU_MUSIC_PATH) as AudioStream
+	if stream == null:
+		stream = _load_mp3_from_disk(MENU_MUSIC_PATH)
+	if stream == null:
+		push_warning("Música do menu não encontrada: %s" % MENU_MUSIC_PATH)
+		return
+	if stream is AudioStreamMP3:
+		stream.loop = true
+	AudioManager.play_music(stream)
+
+
+func _load_mp3_from_disk(path: String) -> AudioStreamMP3:
+	if not FileAccess.file_exists(path):
+		return null
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return null
+	var bytes := file.get_buffer(file.get_length())
+	file.close()
+	var stream := AudioStreamMP3.new()
+	stream.data = bytes
+	return stream

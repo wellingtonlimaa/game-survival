@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "arrow_storm"
+display_name = "Chuva de Setas"
+description = "Setas rápidas e leves disparadas sem parar no alvo mais próximo."
+icon_color = Color(0.514, 0.831, 0.471, 1.0)
+behavior = 0
+cooldown = 0.32
+damage = 5.0
+projectile_count = 1
+projectile_speed = 540.0
+projectile_lifetime = 1.2
+projectile_radius = 5.0
+pierce = 0
+spread_radians = 0.0
+knockback = 60.0
+projectile_color = Color(0.667, 0.937, 0.620, 1.0)
+projectile_kind = "blade"
+sound_key = "shoot"

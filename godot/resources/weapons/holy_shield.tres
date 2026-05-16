@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "holy_shield"
+display_name = "Escudo Sagrado"
+description = "Esfera radiante gira lentamente perto do herói. Forte e protetora."
+icon_color = Color(0.953, 0.871, 0.471, 1.0)
+behavior = 2
+cooldown = 5.0
+damage = 14.0
+projectile_count = 1
+projectile_speed = 0.0
+projectile_lifetime = 6.0
+projectile_radius = 16.0
+pierce = 99
+spread_radians = 0.0
+knockback = 80.0
+orbit_radius = 55.0
+orbit_speed = 1.6
+projectile_color = Color(1.0, 0.937, 0.553, 0.95)
+projectile_kind = "orbit"
+sound_key = "shoot"

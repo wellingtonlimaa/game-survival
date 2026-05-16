@@ -8,5 +8,5 @@ key = "cooldown"
 display_name = "Sincronia"
 description = "Suas armas recarregam mais rápido."
 icon_color = Color(0.392, 0.808, 0.929, 1.0)
-max_level = 5
-cooldown_mult_per_level = -0.045
+max_level = 3
+cooldown_mult_per_level = -0.07

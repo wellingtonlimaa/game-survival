@@ -8,5 +8,5 @@ key = "armor"
 display_name = "Casca Antiga"
 description = "Reduz dano recebido."
 icon_color = Color(0.722, 0.694, 0.808, 1.0)
-max_level = 5
-armor_per_level = 1.4
+max_level = 3
+armor_per_level = 2.1

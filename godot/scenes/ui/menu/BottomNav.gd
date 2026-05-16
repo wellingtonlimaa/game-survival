@@ -6,7 +6,7 @@ const TABS := [
 	{ "key": "characters", "label": "Heróis",   "icon": "👥", "locked_until": null },
 	{ "key": "talents",    "label": "Talentos", "icon": "🌳", "locked_until": "level_5" },
 	{ "key": "fight",      "label": "LUTAR",    "icon": "⭐", "locked_until": null },
-	{ "key": "shop",       "label": "Loja",     "icon": "🛒", "locked_until": null },
+	{ "key": "shop",       "label": "Loja",     "icon": "🛒", "locked_until": "level_2" },
 	{ "key": "premium",    "label": "VIP",      "icon": "💎", "locked_until": "level_10" },
 ]
 
@@ -25,12 +25,15 @@ func _build() -> void:
 func _make_tab_button(tab: Dictionary) -> Control:
 	var is_center: bool = (tab["key"] == "fight")
 	var locked := _is_locked(tab.get("locked_until"))
+	var required_level: int = _required_level(tab.get("locked_until"))
 
 	var btn := Button.new()
 	btn.custom_minimum_size = Vector2(0, 76 if not is_center else 86)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.disabled = locked
 	btn.focus_mode = Control.FOCUS_NONE
+	if required_level > 0:
+		btn.tooltip_text = "Desbloqueia no nível %d" % required_level
 
 	# Conteúdo (ícone + label)
 	if is_center:
@@ -56,8 +59,14 @@ func _make_tab_button(tab: Dictionary) -> Control:
 		btn.add_theme_stylebox_override("hover", style)
 		btn.add_theme_stylebox_override("pressed", style)
 	else:
-		var icon: String = "🔒" if locked else String(tab["icon"])
-		btn.text = "%s\n%s" % [icon, String(tab["label"])]
+		var top_line: String
+		if locked and required_level > 0:
+			top_line = "🔒 Lv %d" % required_level
+		elif locked:
+			top_line = "🔒"
+		else:
+			top_line = String(tab["icon"])
+		btn.text = "%s\n%s" % [top_line, String(tab["label"])]
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.add_theme_color_override("font_color", Color(0.722, 0.694, 0.808, 1) if not locked else Color(0.486, 0.467, 0.557, 1))
 		var style := StyleBoxFlat.new()
@@ -77,11 +86,15 @@ func _make_tab_button(tab: Dictionary) -> Control:
 
 
 func _is_locked(req: Variant) -> bool:
-	if req == null:
+	var need := _required_level(req)
+	if need <= 0:
 		return false
-	if typeof(req) != TYPE_STRING:
-		return false
+	return int(SaveSystem.get_value("player_level", 1)) < need
+
+
+func _required_level(req: Variant) -> int:
+	if req == null or typeof(req) != TYPE_STRING:
+		return 0
 	if String(req).begins_with("level_"):
-		var need := int(String(req).substr(6))
-		return int(SaveSystem.get_value("player_level", 1)) < need
-	return false
+		return int(String(req).substr(6))
+	return 0

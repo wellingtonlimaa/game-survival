@@ -58,18 +58,12 @@ theme_override_font_sizes/font_size = 16
 text = "Cada terreno traz seus próprios perigos. Escolha com sabedoria."
 horizontal_alignment = 1
 
-[node name="CardsScroll" type="ScrollContainer" parent="Layout"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 2
-vertical_scroll_mode = 0
-
-[node name="CardsRow" type="HBoxContainer" parent="Layout/CardsScroll"]
+[node name="CardsRow" type="HBoxContainer" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 16
+size_flags_vertical = 4
+theme_override_constants/separation = 10
 
 [node name="ButtonRow" type="HBoxContainer" parent="Layout"]
 layout_mode = 2

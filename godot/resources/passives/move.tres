@@ -8,5 +8,5 @@ key = "move"
 display_name = "Passos Leves"
 description = "Aumenta sua velocidade de movimento."
 icon_color = Color(0.439, 0.871, 0.494, 1.0)
-max_level = 5
-move_speed_per_level = 18.0
+max_level = 3
+move_speed_per_level = 27.0
