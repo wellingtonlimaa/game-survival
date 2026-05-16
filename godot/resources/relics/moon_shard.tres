@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+key = "moon_shard"
+display_name = "Lasca Lunar"
+description = "+25% XP coletado e +15% sorte."
+icon_color = Color(0.722, 0.553, 1.0, 1.0)
+xp_mult_bonus = 0.25
+luck_bonus = 0.15

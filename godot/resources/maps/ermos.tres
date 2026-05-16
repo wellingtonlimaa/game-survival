@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="MapData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/MapData.gd" id="1_mapdata"]
+
+[resource]
+script = ExtResource("1_mapdata")
+key = "ermos"
+display_name = "Ermos do Crepúsculo"
+description = "Dunas frias sob lua dourada. Pedras lascadas, cactos secos e ossos contam o que veio antes."
+world_width = 3200
+world_height = 2200
+tile_size = 32
+ground_color = Color(0.235, 0.200, 0.149, 1.0)
+ground_variant_color = Color(0.196, 0.165, 0.118, 1.0)
+detail_color = Color(0.290, 0.235, 0.165, 1.0)
+border_color = Color(0.094, 0.075, 0.047, 1.0)
+fog_color = Color(0.439, 0.314, 0.196, 0.08)
+obstacle_count = 90
+obstacle_kinds = PackedStringArray("stone", "stone", "cactus", "bone")
+obstacle_palette = PackedColorArray(0.345, 0.290, 0.220, 1.0, 0.235, 0.196, 0.149, 1.0, 0.396, 0.314, 0.220, 1.0)
+has_lake = false
+has_ruin = true
+has_boss_clearing = true
+lake_color = Color(0.165, 0.149, 0.118, 1.0)
+ruin_color = Color(0.396, 0.314, 0.220, 1.0)
+altar_count = 5
+ambient_color = Color(1.0, 0.749, 0.376, 0.4)
+ambient_count = 18
+ambient_speed = 0.65
+music_track = "desert"

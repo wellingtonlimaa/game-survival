@@ -1,0 +1,180 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/screens/GameOver.gd" id="1_go"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.094, 0.078, 0.149, 0.961)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(1, 0.776, 0.298, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.435, 0.275, 0.063, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 28.0
+content_margin_top = 12.0
+content_margin_right = 28.0
+content_margin_bottom = 14.0
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_go")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.043, 0.035, 0.078, 0.86)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -260.0
+offset_right = 240.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.886, 0.275, 0.345, 1)
+theme_override_font_sizes/font_size = 36
+text = "VOCÊ TOMBOU"
+horizontal_alignment = 1
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="TimeKey" type="Label" parent="Panel/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 18
+text = "Tempo"
+
+[node name="TimeValue" type="Label" parent="Panel/VBox/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "00:00"
+
+[node name="LevelKey" type="Label" parent="Panel/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 18
+text = "Nível final"
+
+[node name="LevelValue" type="Label" parent="Panel/VBox/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "Lv 1"
+
+[node name="KillsKey" type="Label" parent="Panel/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 18
+text = "KOs"
+
+[node name="KillsValue" type="Label" parent="Panel/VBox/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "0"
+
+[node name="BossKey" type="Label" parent="Panel/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 18
+text = "Chefes derrubados"
+
+[node name="BossValue" type="Label" parent="Panel/VBox/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "0"
+
+[node name="EvolvedKey" type="Label" parent="Panel/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 18
+text = "Armas evoluídas"
+
+[node name="EvolvedValue" type="Label" parent="Panel/VBox/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "0"
+
+[node name="CoinsValue" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 28
+text = "+0 🪙"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.439, 0.871, 0.494, 1)
+theme_override_font_sizes/font_size = 16
+text = "Bônus vitória: +120"
+horizontal_alignment = 1
+
+[node name="MenuButton" type="Button" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.137, 0.094, 0.039, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn")
+text = "Voltar ao menu"

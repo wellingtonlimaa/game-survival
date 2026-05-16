@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "alchemist"
+display_name = "Alquimista"
+description = "Mais XP e sorte. Especialista em explosões."
+unlock_hint = "Derrote 3 chefes"
+hp_mult = 0.95
+speed_mult = 0.95
+damage_mult_bonus = 0.10
+xp_mult_bonus = 0.15
+luck_bonus = 0.08
+starter_weapon = "orbit"
+body_color = Color(0.682, 0.376, 0.149, 1.0)
+head_color = Color(0.275, 0.149, 0.094, 1.0)
+eye_color = Color(1.0, 0.561, 0.243, 1.0)

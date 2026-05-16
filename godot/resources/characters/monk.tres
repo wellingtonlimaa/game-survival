@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "monk"
+display_name = "Monge"
+description = "Regenera vida e atrai gemas de longe."
+unlock_hint = "Sobreviva 10 minutos"
+hp_mult = 1.10
+speed_mult = 1.05
+regen_bonus = 0.6
+pickup_bonus = 40.0
+starter_weapon = "orbit"
+body_color = Color(0.949, 0.847, 0.514, 1.0)
+head_color = Color(0.435, 0.376, 0.224, 1.0)
+eye_color = Color(0.722, 0.553, 1.0, 1.0)

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "boss_base"
+display_name = "Senhor da Noite"
+tier = 3
+hp = 650.0
+speed = 58.0
+contact_damage = 28.0
+radius = 38.0
+xp_value = 60
+coin_value = 35
+behavior = 4
+attack_cooldown = 2.2
+windup_time = 0.9
+body_color = Color(0.298, 0.149, 0.235, 1.0)
+eye_color = Color(1.0, 0.298, 0.298, 1.0)
+silhouette = "crown"
+projectile_speed = 210.0
+projectile_damage = 16.0
+projectile_radius = 9.0
+projectile_lifetime = 2.6
+projectile_color = Color(0.949, 0.282, 0.420, 1.0)
+projectile_count = 10

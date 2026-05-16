@@ -1,0 +1,165 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/menu/SideMenu.gd" id="1_side"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_toggle"]
+bg_color = Color(0.094, 0.078, 0.149, 0.949)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_popup"]
+bg_color = Color(0.094, 0.078, 0.149, 0.961)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_option"]
+bg_color = Color(1, 0.776, 0.298, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.345, 0.243, 0.075, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(0.886, 0.275, 0.345, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[node name="SideMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+custom_minimum_size = Vector2(60, 60)
+script = ExtResource("1_side")
+
+[node name="ToggleButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 54)
+layout_mode = 0
+offset_right = 54.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_toggle")
+theme_override_styles/hover = SubResource("StyleBoxFlat_toggle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_toggle")
+text = "≡"
+
+[node name="ToggleBadge" type="Panel" parent="ToggleButton"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 52.0
+offset_bottom = 14.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="PopupPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 0
+offset_left = 64.0
+offset_top = 0.0
+offset_right = 244.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
+
+[node name="VBox" type="VBoxContainer" parent="PopupPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SettingsButton" type="Button" parent="PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.114, 0.094, 0.184, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_option")
+theme_override_styles/hover = SubResource("StyleBoxFlat_option")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option")
+text = "⚙  Configurações"
+
+[node name="SettingsBadge" type="Panel" parent="PopupPanel/VBox/SettingsButton"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 152.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="MailButton" type="Button" parent="PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.114, 0.094, 0.184, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_option")
+theme_override_styles/hover = SubResource("StyleBoxFlat_option")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option")
+text = "✉  Correio"
+
+[node name="MailBadge" type="Panel" parent="PopupPanel/VBox/MailButton"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 152.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="AnnounceButton" type="Button" parent="PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.114, 0.094, 0.184, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_option")
+theme_override_styles/hover = SubResource("StyleBoxFlat_option")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option")
+text = "📢 Anúncio"
+
+[node name="AnnounceBadge" type="Panel" parent="PopupPanel/VBox/AnnounceButton"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 152.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")

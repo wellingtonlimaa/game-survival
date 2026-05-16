@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "mage"
+display_name = "Arcanista"
+description = "Dano alto + sorte. Frágil mas devastador."
+unlock_hint = "Disponível desde o início"
+hp_mult = 0.85
+speed_mult = 0.95
+damage_mult_bonus = 0.18
+luck_bonus = 0.10
+starter_weapon = "wand"
+body_color = Color(0.553, 0.412, 0.886, 1.0)
+head_color = Color(0.196, 0.118, 0.353, 1.0)
+eye_color = Color(0.722, 0.553, 1.0, 1.0)

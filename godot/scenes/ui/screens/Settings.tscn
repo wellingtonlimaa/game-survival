@@ -1,0 +1,207 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/screens/Settings.gd" id="1_s"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/MenuBackground.tscn" id="2_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chip"]
+bg_color = Color(0.067, 0.055, 0.118, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s")
+
+[node name="MenuBackground" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackButton" type="Button" parent="Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_chip")
+theme_override_styles/hover = SubResource("StyleBoxFlat_chip")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_chip")
+text = "←"
+
+[node name="TitleLabel" type="Label" parent="Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 26
+text = "Configurações"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Layout/Header"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="AudioGroup" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="VBox" type="VBoxContainer" parent="Layout/AudioGroup"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GroupLabel" type="Label" parent="Layout/AudioGroup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "🔊 Áudio"
+
+[node name="MusicRow" type="HBoxContainer" parent="Layout/AudioGroup/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MusicLabel" type="Label" parent="Layout/AudioGroup/VBox/MusicRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 14
+text = "Música"
+
+[node name="MusicSlider" type="HSlider" parent="Layout/AudioGroup/VBox/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+
+[node name="SfxRow" type="HBoxContainer" parent="Layout/AudioGroup/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SfxLabel" type="Label" parent="Layout/AudioGroup/VBox/SfxRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 14
+text = "Efeitos"
+
+[node name="SfxSlider" type="HSlider" parent="Layout/AudioGroup/VBox/SfxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+
+[node name="MuteCheckbox" type="CheckBox" parent="Layout/AudioGroup/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "Mudo"
+
+[node name="DifficultyGroup" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="VBox" type="VBoxContainer" parent="Layout/DifficultyGroup"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GroupLabel" type="Label" parent="Layout/DifficultyGroup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚔ Dificuldade"
+
+[node name="DifficultyOption" type="HBoxContainer" parent="Layout/DifficultyGroup/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EasyBtn" type="Button" parent="Layout/DifficultyGroup/VBox/DifficultyOption"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "Fácil"
+
+[node name="NormalBtn" type="Button" parent="Layout/DifficultyGroup/VBox/DifficultyOption"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "Normal"
+
+[node name="HardBtn" type="Button" parent="Layout/DifficultyGroup/VBox/DifficultyOption"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "Difícil"
+
+[node name="InfernalBtn" type="Button" parent="Layout/DifficultyGroup/VBox/DifficultyOption"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.886, 0.275, 0.345, 1)
+theme_override_font_sizes/font_size = 14
+text = "Infernal"
+
+[node name="PrestigeGroup" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
+
+[node name="VBox" type="VBoxContainer" parent="Layout/PrestigeGroup"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GroupLabel" type="Label" parent="Layout/PrestigeGroup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.553, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "⭐ Prestígio"
+
+[node name="PrestigeInfo" type="Label" parent="Layout/PrestigeGroup/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 13
+text = "Prestige: 0   ·   Pontos: 0"
+
+[node name="PrestigeButton" type="Button" parent="Layout/PrestigeGroup/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 14
+text = "Requer 10min OU 1000 KOs"
+
+[node name="Spacer" type="Control" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3

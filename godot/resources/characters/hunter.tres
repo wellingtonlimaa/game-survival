@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "hunter"
+display_name = "Caçador"
+description = "Equilibrado. Bom em tudo, perfeito pra começar."
+unlock_hint = "Disponível desde o início"
+hp_mult = 1.0
+speed_mult = 1.0
+damage_mult_bonus = 0.05
+starter_weapon = "wand"
+body_color = Color(0.298, 0.396, 0.494, 1.0)
+head_color = Color(0.118, 0.094, 0.18, 1.0)
+eye_color = Color(1.0, 0.776, 0.298, 1.0)
