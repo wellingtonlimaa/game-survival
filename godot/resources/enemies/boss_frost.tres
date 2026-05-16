@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "boss_frost"
+display_name = "Lorde Glacial"
+tier = 3
+hp = 700.0
+speed = 45.0
+contact_damage = 26.0
+radius = 38.0
+xp_value = 62
+coin_value = 36
+behavior = 4
+attack_cooldown = 2.0
+windup_time = 1.0
+body_color = Color(0.165, 0.314, 0.420, 1.0)
+eye_color = Color(0.502, 0.847, 1.0, 1.0)
+silhouette = "crown"
+projectile_speed = 180.0
+projectile_damage = 14.0
+projectile_radius = 10.0
+projectile_lifetime = 3.0
+projectile_color = Color(0.502, 0.847, 1.0, 1.0)
+projectile_count = 12

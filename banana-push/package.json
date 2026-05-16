@@ -1,0 +1,13 @@
+{
+  "name": "banana-push-example",
+  "version": "1.0.0",
+  "description": "Exemplo de projeto Node.js usando banana-push",
+  "private": true,
+  "scripts": {
+    "push": "node scripts/banana-push.js"
+  },
+  "bananaPush": {
+    "baseBranch": "develop",
+    "productionBranch": "main"
+  }
+}

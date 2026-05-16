@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "shade"
+display_name = "Sombra Errante"
+tier = 0
+hp = 30.0
+speed = 70.0
+contact_damage = 10.0
+radius = 14.0
+xp_value = 4
+coin_value = 1
+behavior = 0
+body_color = Color(0.376, 0.255, 0.498, 1.0)
+eye_color = Color(0.949, 0.949, 0.498, 1.0)
+silhouette = "blob"

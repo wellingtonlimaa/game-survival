@@ -1,0 +1,192 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/menu/TopBar.gd" id="1_topbar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.094, 0.078, 0.149, 0.949)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.275, 0.227, 0.412, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar"]
+bg_color = Color(0.165, 0.141, 0.235, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.776, 0.298, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
+bg_color = Color(0.043, 0.035, 0.078, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_fill"]
+bg_color = Color(0.439, 0.871, 0.494, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_coin"]
+bg_color = Color(0.067, 0.055, 0.118, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.353, 0.298, 0.137, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_gem"]
+bg_color = Color(0.067, 0.055, 0.118, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.157, 0.318, 0.388, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+
+[node name="TopBar" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 96)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+script = ExtResource("1_topbar")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Avatar" type="PanelContainer" parent="Row"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_avatar")
+
+[node name="LevelLabel" type="Label" parent="Row/Avatar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 28
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameXp" type="VBoxContainer" parent="Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="PlayerName" type="Label" parent="Row/NameXp"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "Sobrevivente"
+
+[node name="XpBar" type="ProgressBar" parent="Row/NameXp"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
+max_value = 100.0
+value = 35.0
+show_percentage = false
+
+[node name="Currencies" type="HBoxContainer" parent="Row"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 6
+
+[node name="EnergyPill" type="PanelContainer" parent="Row/Currencies"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill_coin")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Row/Currencies/EnergyPill"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="Row/Currencies/EnergyPill/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.949, 0.42, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚡"
+
+[node name="EnergyLabel" type="Label" parent="Row/Currencies/EnergyPill/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "60/60"
+
+[node name="GemPill" type="PanelContainer" parent="Row/Currencies"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill_gem")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Row/Currencies/GemPill"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="Row/Currencies/GemPill/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.392, 0.808, 0.929, 1)
+theme_override_font_sizes/font_size = 18
+text = "◆"
+
+[node name="GemsLabel" type="Label" parent="Row/Currencies/GemPill/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "0"
+
+[node name="CoinPill" type="PanelContainer" parent="Row/Currencies"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill_coin")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Row/Currencies/CoinPill"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="Row/Currencies/CoinPill/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.776, 0.298, 1)
+theme_override_font_sizes/font_size = 18
+text = "●"
+
+[node name="CoinsLabel" type="Label" parent="Row/Currencies/CoinPill/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 18
+text = "0"

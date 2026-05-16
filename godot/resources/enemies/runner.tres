@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "runner"
+display_name = "Esquálido"
+tier = 0
+hp = 22.0
+speed = 112.0
+contact_damage = 8.0
+radius = 11.0
+xp_value = 3
+coin_value = 1
+behavior = 0
+body_color = Color(0.682, 0.337, 0.290, 1.0)
+eye_color = Color(1.0, 0.870, 0.376, 1.0)
+silhouette = "tall"

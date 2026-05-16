@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "orbit"
+display_name = "Aura Astral"
+description = "Orbes que orbitam o herói e ferem ao tocar."
+icon_color = Color(0.392, 0.808, 0.929, 1.0)
+behavior = 2
+cooldown = 4.0
+damage = 10.0
+projectile_count = 1
+projectile_speed = 0.0
+projectile_lifetime = 5.0
+projectile_radius = 12.0
+pierce = 99
+spread_radians = 0.0
+knockback = 60.0
+orbit_radius = 80.0
+orbit_speed = 2.8
+projectile_color = Color(0.392, 0.808, 0.929, 0.95)
+projectile_kind = "orbit"
+sound_key = "shoot"

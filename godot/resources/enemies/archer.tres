@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "archer"
+display_name = "Atirador Sombrio"
+tier = 0
+hp = 34.0
+speed = 66.0
+contact_damage = 12.0
+radius = 13.0
+xp_value = 6
+coin_value = 2
+behavior = 1
+attack_cooldown = 1.8
+prefered_distance = 240.0
+windup_time = 0.55
+body_color = Color(0.302, 0.494, 0.286, 1.0)
+eye_color = Color(0.949, 0.949, 0.498, 1.0)
+silhouette = "tall"
+projectile_speed = 280.0
+projectile_damage = 12.0
+projectile_radius = 6.0
+projectile_lifetime = 2.2
+projectile_color = Color(0.612, 0.949, 0.498, 1.0)
+projectile_count = 1

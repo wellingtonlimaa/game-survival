@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/menu/MainMenu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/MenuBackground.tscn" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/TopBar.tscn" id="3_top"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/SideMenu.tscn" id="4_side"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/HeroDiorama.tscn" id="5_hero"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/ChestButton.tscn" id="6_chest"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/StartButton.tscn" id="7_start"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/BottomNav.tscn" id="8_nav"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="MenuBackground" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="ContentLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+
+[node name="TopBar" parent="ContentLayout" instance=ExtResource("3_top")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TitleRow" type="HBoxContainer" parent="ContentLayout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SideMenu" parent="ContentLayout/TitleRow" instance=ExtResource("4_side")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TitleVBox" type="VBoxContainer" parent="ContentLayout/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Title" type="Label" parent="ContentLayout/TitleRow/TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
+theme_override_font_sizes/font_size = 28
+text = "Noite dos Sobreviventes"
+
+[node name="Subtitle" type="Label" parent="ContentLayout/TitleRow/TitleVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
+theme_override_font_sizes/font_size = 16
+text = "Melhor tempo: --"
+
+[node name="HeroBox" type="CenterContainer" parent="ContentLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HeroDiorama" parent="ContentLayout/HeroBox" instance=ExtResource("5_hero")]
+layout_mode = 2
+
+[node name="ChestBox" type="CenterContainer" parent="ContentLayout"]
+layout_mode = 2
+
+[node name="ChestButton" parent="ContentLayout/ChestBox" instance=ExtResource("6_chest")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StartBox" type="CenterContainer" parent="ContentLayout"]
+layout_mode = 2
+
+[node name="StartButton" parent="ContentLayout/StartBox" instance=ExtResource("7_start")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BottomNav" parent="ContentLayout" instance=ExtResource("8_nav")]
+unique_name_in_owner = true
+layout_mode = 2

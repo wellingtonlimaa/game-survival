@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+key = "rogue"
+display_name = "Ladina"
+description = "Veloz e ágil. Vida baixa mas escapa de tudo."
+unlock_hint = "Acumule 400 KOs"
+hp_mult = 0.80
+speed_mult = 1.25
+pickup_bonus = 20.0
+starter_weapon = "knife"
+body_color = Color(0.165, 0.275, 0.227, 1.0)
+head_color = Color(0.094, 0.149, 0.118, 1.0)
+eye_color = Color(0.439, 0.871, 0.494, 1.0)

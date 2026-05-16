@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PassiveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_pd"]
+
+[resource]
+script = ExtResource("1_pd")
+key = "magnet"
+display_name = "Pedra-Imã"
+description = "Atrai gemas de XP de mais longe."
+icon_color = Color(0.553, 0.412, 0.886, 1.0)
+max_level = 3
+magnet_per_level = 50.0

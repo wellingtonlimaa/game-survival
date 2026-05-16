@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "boss_warlock"
+display_name = "Bruxo Profano"
+tier = 3
+hp = 720.0
+speed = 52.0
+contact_damage = 30.0
+radius = 36.0
+xp_value = 64
+coin_value = 38
+behavior = 4
+attack_cooldown = 1.8
+windup_time = 0.7
+body_color = Color(0.243, 0.165, 0.396, 1.0)
+eye_color = Color(0.722, 0.553, 1.0, 1.0)
+silhouette = "mask"
+projectile_speed = 240.0
+projectile_damage = 18.0
+projectile_radius = 9.0
+projectile_lifetime = 2.4
+projectile_color = Color(0.722, 0.553, 1.0, 1.0)
+projectile_count = 8
