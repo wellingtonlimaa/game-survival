@@ -1,8 +1,9 @@
 extends Button
 
-signal start_pressed
+## Botão principal. A energia deixou de ser trava: agora ela vira bônus
+## de moedas na partida (gasta na tela de seleção de mapa).
 
-@export var energy_cost: int = 5
+signal start_pressed
 
 var _pulse_tween: Tween
 
@@ -10,7 +11,7 @@ var _pulse_tween: Tween
 func _ready() -> void:
 	pressed.connect(_on_press)
 	EventBus.currency_changed.connect(_on_currency_changed)
-	_refresh_cost()
+	_refresh()
 	_start_pulse()
 
 
@@ -23,23 +24,23 @@ func _start_pulse() -> void:
 	_pulse_tween.tween_property(self, "scale", Vector2(1.00, 1.00), 0.65).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
-func _refresh_cost() -> void:
-	var energy := int(SaveSystem.get_value("energy", 0))
-	var enabled := energy >= energy_cost
-	disabled = not enabled
-	modulate = Color(1, 1, 1, 1) if enabled else Color(0.55, 0.55, 0.6, 1)
-	text = "COMEÇAR\n⚡ x %d" % energy_cost
+func _refresh() -> void:
+	var energy: int = SaveSystem.energy()
+	disabled = false
+	modulate = Color(1, 1, 1, 1)
+	if energy >= 5:
+		text = "JOGAR\n⚡ bônus ativo"
+	else:
+		text = "JOGAR\nsem bônus de energia"
 
 
 func _on_currency_changed(kind: String, _value: int) -> void:
 	if kind == "energy":
-		_refresh_cost()
+		_refresh()
 
 
 func _on_press() -> void:
-	if not SaveSystem.spend_energy(energy_cost):
-		return
-	# Animação de press (squash)
+	EventBus.sfx("select", 0.8)
 	var t := create_tween()
 	t.tween_property(self, "scale", Vector2(0.95, 0.95), 0.08)
 	t.tween_property(self, "scale", Vector2(1.00, 1.00), 0.12)

@@ -1,113 +1,111 @@
-extends Control
+extends "res://scenes/ui/screens/ScreenBase.gd"
 
-signal back_pressed
+## Salão dos recordes: melhores runs, histórico e estatísticas gerais.
 
-
-func _ready() -> void:
-	%BackButton.pressed.connect(_back)
-	_build()
+const MEDALS := ["🥇", "🥈", "🥉"]
 
 
-func _back() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/menu/MainMenu.tscn")
+func _init() -> void:
+	screen_title = "Recordes"
+	screen_icon = "🏅"
 
 
-func _format_time(seconds: int) -> String:
-	var m: int = seconds / 60
-	var s: int = seconds % 60
-	return "%02d:%02d" % [m, s]
+func _build_content() -> void:
+	# Estatísticas gerais
+	content.add_child(section("SEUS NÚMEROS"))
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	content.add_child(grid)
+	grid.add_child(_stat("⏱ Melhor tempo", GameManager.format_time(int(SaveSystem.get_value("best_time", 0))), P.ACCENT_CYAN))
+	grid.add_child(_stat("☠ KOs totais", str(int(SaveSystem.get_value("total_kills", 0))), P.ACCENT_RED))
+	grid.add_child(_stat("👑 Chefes", str(int(SaveSystem.get_value("boss_kills", 0))), P.ACCENT_GOLD))
+	grid.add_child(_stat("⭐ Evoluções", str(int(SaveSystem.get_value("evolved_weapons", 0))), P.ACCENT_PURPLE))
+	grid.add_child(_stat("🌅 Vitórias", str(int(SaveSystem.get_value("victories", 0))), P.ACCENT_GREEN))
+	grid.add_child(_stat("🎮 Partidas", str(int(SaveSystem.get_value("total_runs", 0))), P.TEXT_SECONDARY))
 
-
-func _build() -> void:
-	for child in %RankingContainer.get_children():
-		child.queue_free()
-	for child in %HistoryContainer.get_children():
-		child.queue_free()
-
+	content.add_child(section("TOP 10 — MAIOR SOBREVIVÊNCIA"))
 	var ranking: Array = SaveSystem.get_value("ranking", [])
 	if ranking.is_empty():
-		var empty := Label.new()
-		empty.text = "Sem registros ainda."
-		empty.add_theme_color_override("font_color", Color(0.514, 0.486, 0.616))
-		empty.add_theme_font_size_override("font_size", 14)
-		%RankingContainer.add_child(empty)
+		content.add_child(_empty("Nenhum registro ainda. Bora sobreviver!"))
 	else:
 		var pos: int = 1
 		for run in ranking:
-			%RankingContainer.add_child(_make_row(pos, run, true))
+			content.add_child(_make_row(pos, run, true))
 			pos += 1
 
+	content.add_child(section("PARTIDAS RECENTES"))
 	var history: Array = SaveSystem.get_value("history", [])
 	if history.is_empty():
-		var empty := Label.new()
-		empty.text = "Sem histórico ainda."
-		empty.add_theme_color_override("font_color", Color(0.514, 0.486, 0.616))
-		empty.add_theme_font_size_override("font_size", 14)
-		%HistoryContainer.add_child(empty)
+		content.add_child(_empty("Sem histórico ainda."))
 	else:
-		var pos: int = 1
+		var i: int = 1
 		for run in history:
-			%HistoryContainer.add_child(_make_row(pos, run, false))
-			pos += 1
+			content.add_child(_make_row(i, run, false))
+			i += 1
+
+
+func _stat(label: String, value: String, color: Color) -> Control:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UI.panel_style(P.BG_MID, P.BORDER, 12, 2, 8))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 0)
+	panel.add_child(box)
+	var l := UI.make_label(label, 11, P.TEXT_MUTED)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(l)
+	var v := UI.make_label(value, 20, color, 3)
+	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(v)
+	return panel
+
+
+func _empty(text: String) -> Control:
+	var l := UI.make_label(text, 12, P.TEXT_MUTED)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	return l
 
 
 func _make_row(pos: int, run: Dictionary, is_ranking: bool) -> Control:
 	var panel := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.094, 0.078, 0.149, 0.85)
-	style.border_color = Color(1, 0.776, 0.298) if (is_ranking and pos == 1) else Color(0.275, 0.227, 0.412)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 3
-	style.corner_radius_top_left = 10
-	style.corner_radius_top_right = 10
-	style.corner_radius_bottom_left = 10
-	style.corner_radius_bottom_right = 10
-	style.content_margin_left = 10
-	style.content_margin_top = 8
-	style.content_margin_right = 10
-	style.content_margin_bottom = 8
-	panel.add_theme_stylebox_override("panel", style)
+	var accent: Color = P.ACCENT_GOLD if (is_ranking and pos <= 3) else P.BORDER
+	panel.add_theme_stylebox_override("panel", UI.panel_style(P.BG_MID, accent, 12, 2, 8))
 
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 10)
-	panel.add_child(hbox)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
 
-	var pos_lbl := Label.new()
-	pos_lbl.text = "#%d" % pos
-	pos_lbl.custom_minimum_size = Vector2(40, 0)
-	pos_lbl.add_theme_color_override("font_color", Color(1, 0.776, 0.298) if pos <= 3 else Color(0.722, 0.694, 0.808))
-	pos_lbl.add_theme_font_size_override("font_size", 16)
-	hbox.add_child(pos_lbl)
+	var badge: String = MEDALS[pos - 1] if (is_ranking and pos <= 3) else "#%d" % pos
+	var pos_label := UI.make_label(badge, 16, P.ACCENT_GOLD if pos <= 3 else P.TEXT_MUTED, 2)
+	pos_label.custom_minimum_size = Vector2(34, 0)
+	pos_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(pos_label)
 
-	var vbox := VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.add_theme_constant_override("separation", 2)
-	hbox.add_child(vbox)
+	var texts := VBoxContainer.new()
+	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	texts.add_theme_constant_override("separation", 1)
+	row.add_child(texts)
 
-	var top := Label.new()
-	var won: bool = bool(run.get("won", false))
-	var marker := "🏆 " if won else ""
-	top.text = "%s%s · Lv %d · %d KOs" % [marker, _format_time(int(run.get("time", 0))), int(run.get("level", 1)), int(run.get("kills", 0))]
-	top.add_theme_color_override("font_color", Color(0.953, 0.929, 0.871))
-	top.add_theme_font_size_override("font_size", 14)
-	vbox.add_child(top)
-
-	var bottom := Label.new()
-	bottom.text = "%s · %s · %s" % [
-		String(run.get("character", "?")).capitalize(),
-		String(run.get("difficulty", "?")),
-		String(run.get("map", "?")),
+	var line1 := "%s  ·  ☠ %d  ·  Lv %d" % [
+		GameManager.format_time(int(run.get("time", 0))),
+		int(run.get("kills", 0)),
+		int(run.get("level", 1)),
 	]
-	bottom.add_theme_color_override("font_color", Color(0.514, 0.486, 0.616))
-	bottom.add_theme_font_size_override("font_size", 11)
-	vbox.add_child(bottom)
+	texts.add_child(UI.make_label(line1, 15, P.TEXT_PRIMARY, 2))
 
-	var coin := Label.new()
-	coin.text = "+%d 🪙" % int(run.get("coins", 0))
-	coin.add_theme_color_override("font_color", Color(1, 0.776, 0.298))
-	coin.add_theme_font_size_override("font_size", 14)
-	hbox.add_child(coin)
+	var char_key: String = String(run.get("character", "hunter"))
+	var char_res: Resource = CharacterRegistry.get_character(char_key)
+	var map_key: String = String(run.get("map", "forest"))
+	var map_res: Resource = MapRegistry.get_map(map_key)
+	var line2 := "%s · %s · %s" % [
+		char_res.display_name if char_res != null else char_key,
+		map_res.display_name if map_res != null else map_key,
+		String(run.get("difficulty", "normal")).capitalize(),
+	]
+	texts.add_child(UI.make_label(line2, 10, P.TEXT_MUTED))
 
+	if bool(run.get("won", false)):
+		row.add_child(UI.make_chip("VITÓRIA", P.ACCENT_GREEN, 10))
+	row.add_child(UI.make_label("🪙%d" % int(run.get("coins", 0)), 13, P.ACCENT_GOLD, 2))
 	return panel

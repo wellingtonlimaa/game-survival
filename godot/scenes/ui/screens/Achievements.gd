@@ -1,80 +1,83 @@
-extends Control
+extends "res://scenes/ui/screens/ScreenBase.gd"
 
-signal back_pressed
-
-
-func _ready() -> void:
-	%BackButton.pressed.connect(_back)
-	_build()
+## Conquistas com progresso visível (o que falta pra cada uma).
 
 
-func _back() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/menu/MainMenu.tscn")
+func _init() -> void:
+	screen_title = "Conquistas"
+	screen_icon = "🏆"
 
 
-func _build() -> void:
-	for child in %Container.get_children():
-		child.queue_free()
+func _build_content() -> void:
 	var unlocked: Array = SaveSystem.get_value("achievements", [])
+	var total: int = UnlockManager.ACHIEVEMENTS.size()
 	var done: int = 0
 	for key in UnlockManager.ACHIEVEMENTS.keys():
-		var info: Dictionary = UnlockManager.ACHIEVEMENTS[key]
-		var has: bool = unlocked.has(key)
-		if has:
+		if unlocked.has(key):
 			done += 1
-		%Container.add_child(_make_row(key, info, has))
-	%CountLabel.text = "%d / %d" % [done, UnlockManager.ACHIEVEMENTS.size()]
+
+	header_extra.add_child(UI.make_label("%d/%d" % [done, total], 18, P.ACCENT_GOLD, 3))
+
+	var bar := UI.make_progress(P.ACCENT_GOLD, Color(0.10, 0.09, 0.15, 0.9), 12)
+	bar.max_value = float(total)
+	bar.value = float(done)
+	content.add_child(bar)
+
+	for key in UnlockManager.ACHIEVEMENTS.keys():
+		var info: Dictionary = UnlockManager.ACHIEVEMENTS[key]
+		content.add_child(_make_row(key, info, unlocked.has(key)))
+
+	content.add_child(section("Desbloqueios da coleção"))
+	content.add_child(_collection_panel())
 
 
 func _make_row(key: String, info: Dictionary, has: bool) -> Control:
 	var panel := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.094, 0.078, 0.149, 0.94) if has else Color(0.067, 0.055, 0.118, 0.7)
-	style.border_color = Color(1, 0.776, 0.298) if has else Color(0.275, 0.227, 0.412)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 3
-	style.corner_radius_top_left = 12
-	style.corner_radius_top_right = 12
-	style.corner_radius_bottom_left = 12
-	style.corner_radius_bottom_right = 12
-	style.content_margin_left = 14
-	style.content_margin_top = 10
-	style.content_margin_right = 14
-	style.content_margin_bottom = 10
-	panel.add_theme_stylebox_override("panel", style)
+	panel.add_theme_stylebox_override("panel", UI.panel_style(
+		P.BG_MID if has else Color(0.067, 0.055, 0.118, 0.75),
+		P.ACCENT_GOLD if has else P.BORDER_SOFT, 12, 2, 10))
 
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 12)
-	panel.add_child(hbox)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	panel.add_child(row)
 
-	var icon := Label.new()
-	icon.text = "🏆" if has else "🔒"
-	icon.add_theme_font_size_override("font_size", 28)
-	hbox.add_child(icon)
+	var icon := UI.make_label(String(info.get("icon", "🏆")) if has else "🔒", 24, P.ACCENT_GOLD if has else P.TEXT_MUTED)
+	icon.custom_minimum_size = Vector2(32, 0)
+	icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(icon)
 
-	var vbox := VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(vbox)
-
-	var name_lbl := Label.new()
-	name_lbl.text = String(info["label"])
-	name_lbl.add_theme_color_override("font_color", Color(1, 0.776, 0.298) if has else Color(0.722, 0.694, 0.808))
-	name_lbl.add_theme_font_size_override("font_size", 16)
-	vbox.add_child(name_lbl)
-
-	var hint := Label.new()
-	hint.text = String(info["hint"])
-	hint.add_theme_color_override("font_color", Color(0.722, 0.694, 0.808))
-	hint.add_theme_font_size_override("font_size", 12)
+	var texts := VBoxContainer.new()
+	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	texts.add_theme_constant_override("separation", 1)
+	row.add_child(texts)
+	texts.add_child(UI.make_label(String(info["label"]), 16, P.TEXT_PRIMARY if has else P.TEXT_SECONDARY, 2))
+	var hint_text: String = String(info["hint"])
+	var progress: String = UnlockManager.achievement_progress(key)
+	if not has and progress != "":
+		hint_text += "  (%s)" % progress
+	var hint := UI.make_label(hint_text, 11, P.TEXT_MUTED)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(hint)
+	texts.add_child(hint)
 
-	var reward_lbl := Label.new()
-	reward_lbl.text = "+%d 🪙" % int(info["reward"])
-	reward_lbl.add_theme_color_override("font_color", Color(1, 0.776, 0.298))
-	reward_lbl.add_theme_font_size_override("font_size", 16)
-	hbox.add_child(reward_lbl)
+	row.add_child(UI.make_label("+%d 🪙" % int(info["reward"]), 15, P.ACCENT_GOLD if not has else P.TEXT_MUTED, 2))
+	return panel
 
+
+func _collection_panel() -> Control:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UI.panel_style(P.BG_MID, P.ACCENT_CYAN, 12, 2, 10))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	panel.add_child(box)
+
+	var weapons: Array = SaveSystem.get_value("unlocked_weapons", [])
+	var chars: Array = SaveSystem.get_value("unlocked_characters", [])
+	var relics: Array = SaveSystem.get_value("unlocked_relics", [])
+	box.add_child(UI.make_label("⚔ Armas: %d/20" % weapons.size(), 14, P.TEXT_PRIMARY))
+	box.add_child(UI.make_label("🧙 Heróis: %d/6" % chars.size(), 14, P.TEXT_PRIMARY))
+	box.add_child(UI.make_label("💎 Relíquias: %d/12" % relics.size(), 14, P.TEXT_PRIMARY))
+
+	var next_hint := UnlockManager.next_unlock_hint()
+	if next_hint != "":
+		box.add_child(UI.make_label("Próximo: %s" % next_hint, 11, P.ACCENT_CYAN))
 	return panel

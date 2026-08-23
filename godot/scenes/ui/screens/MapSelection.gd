@@ -1,269 +1,245 @@
-extends Control
+extends "res://scenes/ui/screens/ScreenBase.gd"
 
-signal map_chosen(key: String)
-signal cancelled
+## Antessala da partida: escolhe o mapa e confere herói, dificuldade e duração.
 
 const GAME_WORLD_PATH := "res://scenes/main/GameWorld.tscn"
-const MAIN_MENU_PATH := "res://scenes/ui/menu/MainMenu.tscn"
+const RegistryScript := preload("res://scripts/systems/WeaponRegistry.gd")
+const ENERGY_COST := 5
 
-@onready var cards_row: HBoxContainer = %CardsRow
+var _selected_key: String = "forest"
+var _cards: Array = []
+var _cards_box: VBoxContainer
+var _summary_box: HBoxContainer
+var _play_button: Button
+var _energy_note: Label
+var _weapons_row: HFlowContainer
+var _weapon_info: Label
 
-const CARD_MIN_WIDTH := 140
-const CARD_MIN_HEIGHT := 270
-@onready var play_button: Button = %PlayButton
-@onready var back_button: Button = %BackButton
 
-var _selected_key: String = MapRegistry.DEFAULT_KEY
-var _cards: Array[Control] = []
+func _init() -> void:
+	screen_title = "Escolha o campo"
+	screen_icon = "🗺"
 
 
-func _ready() -> void:
+func _build_content() -> void:
 	_selected_key = MapRegistry.selected_key
+
+	_cards_box = VBoxContainer.new()
+	_cards_box.add_theme_constant_override("separation", 8)
+	content.add_child(_cards_box)
+
+	content.add_child(section("ARMA INICIAL"))
+	_weapons_row = HFlowContainer.new()
+	_weapons_row.add_theme_constant_override("h_separation", 6)
+	_weapons_row.add_theme_constant_override("v_separation", 6)
+	content.add_child(_weapons_row)
+	_weapon_info = UI.make_label("", 11, P.TEXT_SECONDARY)
+	_weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_weapon_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_weapon_info)
+
+	content.add_child(section("SUA PREPARAÇÃO"))
+	_summary_box = HBoxContainer.new()
+	_summary_box.add_theme_constant_override("separation", 6)
+	_summary_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_child(_summary_box)
+
+	_energy_note = UI.make_label("", 11, P.TEXT_MUTED)
+	_energy_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(_energy_note)
+
+	_play_button = UI.make_button("⚔  COMEÇAR A NOITE", P.ACCENT_GOLD, P.TEXT_DARK, 22)
+	_play_button.custom_minimum_size = Vector2(0, 62)
+	_play_button.pressed.connect(_on_play)
+	content.add_child(_play_button)
+
 	_build_cards()
-	play_button.pressed.connect(_on_play)
-	back_button.pressed.connect(_on_back)
+	_build_weapons()
+	_refresh_summary()
 
 
 func _build_cards() -> void:
-	for child in cards_row.get_children():
+	for child in _cards_box.get_children():
 		child.queue_free()
 	_cards.clear()
 	for key in MapRegistry.all_keys():
 		var data: Resource = MapRegistry.get_map(key)
 		var card := _make_card(data)
-		cards_row.add_child(card)
+		_cards_box.add_child(card)
 		_cards.append(card)
-	_refresh_selection()
 
 
 func _make_card(map_data: Resource) -> Control:
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(CARD_MIN_WIDTH, CARD_MIN_HEIGHT)
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.size_flags_vertical = Control.SIZE_FILL
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.set_meta("map_key", map_data.key)
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.094, 0.078, 0.149, 0.961)
-	style.border_color = Color(0.275, 0.227, 0.412, 1)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 4
-	style.corner_radius_top_left = 14
-	style.corner_radius_top_right = 14
-	style.corner_radius_bottom_left = 14
-	style.corner_radius_bottom_right = 14
-	style.content_margin_left = 10
-	style.content_margin_top = 10
-	style.content_margin_right = 10
-	style.content_margin_bottom = 10
-	style.shadow_color = Color(0, 0, 0, 0.4)
-	style.shadow_size = 6
-	style.shadow_offset = Vector2(0, 3)
-	panel.add_theme_stylebox_override("panel", style)
-
-	var vbox := VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_theme_constant_override("separation", 6)
-	panel.add_child(vbox)
-
-	# Preview procedural com borda própria
-	var preview_frame := PanelContainer.new()
-	preview_frame.custom_minimum_size = Vector2(0, 115)
-	var frame_style := StyleBoxFlat.new()
-	frame_style.bg_color = map_data.ground_color
-	frame_style.border_color = Color(0.435, 0.388, 0.557, 1)
-	frame_style.border_width_left = 2
-	frame_style.border_width_top = 2
-	frame_style.border_width_right = 2
-	frame_style.border_width_bottom = 2
-	frame_style.corner_radius_top_left = 10
-	frame_style.corner_radius_top_right = 10
-	frame_style.corner_radius_bottom_left = 10
-	frame_style.corner_radius_bottom_right = 10
-	preview_frame.add_theme_stylebox_override("panel", frame_style)
-	vbox.add_child(preview_frame)
-
-	# Overlay desenhado em cima da cor de fundo
-	var preview_overlay := _MapPreview.new()
-	preview_overlay.map_data = map_data
-	preview_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	preview_frame.add_child(preview_overlay)
-
-	var title := Label.new()
-	title.text = map_data.display_name
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.add_theme_color_override("font_color", Color(1.0, 0.776, 0.298, 1))
-	title.add_theme_color_override("font_outline_color", Color(0.043, 0.035, 0.078, 1))
-	title.add_theme_constant_override("outline_size", 3)
-	title.add_theme_font_size_override("font_size", 17)
-	vbox.add_child(title)
-
-	var desc := Label.new()
-	desc.text = map_data.description
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_color_override("font_color", Color(0.82, 0.80, 0.88, 1))
-	desc.add_theme_font_size_override("font_size", 11)
-	desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(desc)
-
-	# Chips de features
-	var tags_row := HBoxContainer.new()
-	tags_row.add_theme_constant_override("separation", 4)
-	tags_row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	vbox.add_child(tags_row)
-
-	if map_data.has_lake:
-		tags_row.add_child(_make_chip("🌊", map_data.lake_color))
-	if map_data.has_ruin:
-		tags_row.add_child(_make_chip("🏛", map_data.ruin_color))
-	if map_data.fog_color.a > 0.05:
-		tags_row.add_child(_make_chip("🌫", Color(0.722, 0.694, 0.808, 1)))
+	var selected: bool = map_data.key == _selected_key
 
 	var button := Button.new()
-	button.text = "Escolher"
-	button.add_theme_font_size_override("font_size", 15)
-	button.add_theme_color_override("font_color", Color(0.137, 0.094, 0.039, 1))
-	panel.set_meta("button", button)
-	var btn_style := StyleBoxFlat.new()
-	btn_style.bg_color = Color(1, 0.776, 0.298, 1)
-	btn_style.border_color = Color(0.435, 0.275, 0.063, 1)
-	btn_style.border_width_left = 2
-	btn_style.border_width_top = 2
-	btn_style.border_width_right = 2
-	btn_style.border_width_bottom = 4
-	btn_style.corner_radius_top_left = 10
-	btn_style.corner_radius_top_right = 10
-	btn_style.corner_radius_bottom_left = 10
-	btn_style.corner_radius_bottom_right = 10
-	btn_style.content_margin_left = 10
-	btn_style.content_margin_top = 6
-	btn_style.content_margin_right = 10
-	btn_style.content_margin_bottom = 8
-	button.add_theme_stylebox_override("normal", btn_style)
-	button.add_theme_stylebox_override("hover", btn_style)
-	button.add_theme_stylebox_override("pressed", btn_style)
-	button.pressed.connect(func(): _select(map_data.key))
-	vbox.add_child(button)
+	button.custom_minimum_size = Vector2(0, 118)
+	button.focus_mode = Control.FOCUS_NONE
+	var style := UI.panel_style(P.BG_MID, P.ACCENT_GOLD if selected else P.BORDER, 14, 4 if selected else 2, 8)
+	if selected:
+		style.shadow_color = Color(1.0, 0.776, 0.298, 0.45)
+		style.shadow_size = 12
+	button.add_theme_stylebox_override("normal", style)
+	button.add_theme_stylebox_override("hover", style)
+	button.add_theme_stylebox_override("pressed", style)
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.pressed.connect(func():
+		_selected_key = map_data.key
+		EventBus.sfx("click", 0.5)
+		_build_cards())
 
-	return panel
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(row)
+
+	var preview := _MapPreview.new()
+	preview.map_data = map_data
+	preview.custom_minimum_size = Vector2(112, 96)
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(preview)
+
+	var texts := VBoxContainer.new()
+	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	texts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	texts.add_theme_constant_override("separation", 3)
+	texts.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(texts)
+
+	var title_row := HBoxContainer.new()
+	title_row.add_theme_constant_override("separation", 6)
+	texts.add_child(title_row)
+	title_row.add_child(UI.make_label(map_data.display_name, 18, P.ACCENT_GOLD, 3))
+	if selected:
+		title_row.add_child(UI.make_chip("ESCOLHIDO", P.ACCENT_GREEN, 10))
+
+	var desc := UI.make_label(map_data.description, 11, P.TEXT_SECONDARY)
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	texts.add_child(desc)
+
+	var tags := HBoxContainer.new()
+	tags.add_theme_constant_override("separation", 4)
+	texts.add_child(tags)
+	if map_data.has_lake:
+		tags.add_child(UI.make_chip("🌊 lago", map_data.lake_color.lightened(0.3), 10))
+	if map_data.has_ruin:
+		tags.add_child(UI.make_chip("🏛 ruínas", map_data.ruin_color.lightened(0.3), 10))
+	if map_data.fog_color.a > 0.05:
+		tags.add_child(UI.make_chip("🌫 névoa", P.TEXT_SECONDARY, 10))
+	tags.add_child(UI.make_chip("🔮 %d altares" % map_data.altar_count, P.ACCENT_PURPLE, 10))
+
+	return button
 
 
-func _select(key: String) -> void:
-	_selected_key = key
-	_refresh_selection()
-
-
-func _refresh_selection() -> void:
-	for card in _cards:
-		var key: String = String(card.get_meta("map_key"))
-		var style: StyleBoxFlat = card.get_theme_stylebox("panel") as StyleBoxFlat
-		if style == null:
+## Escolha da arma inicial: todas as liberadas aparecem aqui
+func _build_weapons() -> void:
+	for child in _weapons_row.get_children():
+		child.queue_free()
+	var current: String = GameManager.starting_weapon()
+	for key in RegistryScript.unlocked_keys():
+		var data: Resource = RegistryScript.get_data(key)
+		if data == null:
 			continue
-		var selected := key == _selected_key
-		style.border_color = Color(1.0, 0.776, 0.298, 1) if selected else Color(0.275, 0.227, 0.412, 1)
-		style.border_width_left = 4 if selected else 2
-		style.border_width_top = 4 if selected else 2
-		style.border_width_right = 4 if selected else 2
-		style.border_width_bottom = 6 if selected else 4
-		style.shadow_color = Color(1.0, 0.776, 0.298, 0.55) if selected else Color(0, 0, 0, 0.4)
-		style.shadow_size = 14 if selected else 6
-		var btn: Button = card.get_meta("button") as Button
-		if btn != null:
-			btn.text = "Escolher"
+		var selected: bool = key == current
+		var btn := Button.new()
+		btn.custom_minimum_size = Vector2(54, 54)
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.text = data.icon
+		btn.add_theme_font_size_override("font_size", 24)
+		var style := UI.panel_style(
+			data.icon_color.lerp(P.BG_DEEP, 0.55 if selected else 0.78),
+			data.icon_color if selected else P.BORDER, 12, 3 if selected else 2, 4)
+		btn.add_theme_stylebox_override("normal", style)
+		btn.add_theme_stylebox_override("hover", style)
+		btn.add_theme_stylebox_override("pressed", style)
+		btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+		btn.tooltip_text = "%s — %s" % [data.display_name, data.description]
+		btn.pressed.connect(func():
+			GameManager.set_starting_weapon(key)
+			EventBus.sfx("click", 0.5)
+			_build_weapons())
+		_weapons_row.add_child(btn)
+	var chosen: Resource = RegistryScript.get_data(current)
+	if chosen != null:
+		_weapon_info.text = "%s %s — %s" % [chosen.icon, chosen.display_name, chosen.description]
+		_weapon_info.add_theme_color_override("font_color", chosen.icon_color)
 
 
-func _make_chip(text: String, accent: Color) -> Control:
-	var holder := PanelContainer.new()
-	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.067, 0.055, 0.118, 0.85)
-	s.border_color = accent
-	s.border_width_left = 1
-	s.border_width_top = 1
-	s.border_width_right = 1
-	s.border_width_bottom = 1
-	s.corner_radius_top_left = 100
-	s.corner_radius_top_right = 100
-	s.corner_radius_bottom_left = 100
-	s.corner_radius_bottom_right = 100
-	s.content_margin_left = 6
-	s.content_margin_top = 2
-	s.content_margin_right = 6
-	s.content_margin_bottom = 2
-	holder.add_theme_stylebox_override("panel", s)
-	var lbl := Label.new()
-	lbl.text = text
-	lbl.add_theme_color_override("font_color", Color(0.92, 0.90, 0.96, 1))
-	lbl.add_theme_font_size_override("font_size", 11)
-	holder.add_child(lbl)
-	return holder
+func _refresh_summary() -> void:
+	for child in _summary_box.get_children():
+		child.queue_free()
+
+	var character: Resource = CharacterRegistry.selected()
+	if character != null:
+		_summary_box.add_child(UI.make_chip("🧙 %s" % character.display_name, character.body_color.lightened(0.35), 12))
+	var weapon: Resource = RegistryScript.get_data(GameManager.starting_weapon())
+	if weapon != null:
+		_summary_box.add_child(UI.make_chip("%s %s" % [weapon.icon, weapon.display_name], weapon.icon_color, 12))
+
+	var diff: Dictionary = GameManager.difficulty_data()
+	_summary_box.add_child(UI.make_chip("%s %s" % [String(diff.get("icon", "🌙")), String(diff.get("label", "Normal"))], P.ACCENT_ORANGE, 12))
+	_summary_box.add_child(UI.make_chip("⏱ %d min" % int(GameManager.selected_goal_seconds / 60), P.ACCENT_CYAN, 12))
+
+	var energy: int = SaveSystem.energy()
+	if energy >= ENERGY_COST:
+		_energy_note.text = "⚡ %d energia — bônus de +20%% de moedas nesta partida" % energy
+		_energy_note.add_theme_color_override("font_color", P.CRIT)
+	else:
+		_energy_note.text = "⚡ sem energia (volta 1 a cada 90s) — dá pra jogar, só sem o bônus de moedas"
+		_energy_note.add_theme_color_override("font_color", P.TEXT_MUTED)
 
 
 func _on_play() -> void:
 	MapRegistry.select(_selected_key)
+	GameManager.energy_bonus = SaveSystem.spend_energy(ENERGY_COST)
+	EventBus.sfx("select", 0.9)
 	get_tree().change_scene_to_file(GAME_WORLD_PATH)
 
 
-func _on_back() -> void:
-	get_tree().change_scene_to_file(MAIN_MENU_PATH)
-
-
-# Pré-visualização desenhada inline
+## Miniatura procedural do bioma
 class _MapPreview extends Control:
 	var map_data: Resource
-
-	func _ready() -> void:
-		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	func _draw() -> void:
 		if map_data == null:
 			return
-		# Padrão xadrez do bioma (mais denso e suave)
-		var tile := 14
+		draw_rect(Rect2(Vector2.ZERO, size), map_data.ground_color)
+		var tile := 12
 		var cols: int = int(size.x / tile) + 1
 		var rows: int = int(size.y / tile) + 1
 		var variant: Color = map_data.ground_variant_color
-		variant.a = 0.75
+		variant.a = 0.8
 		for r in range(rows):
 			for c in range(cols):
 				if (r + c) % 2 == 0:
 					draw_rect(Rect2(c * tile, r * tile, tile, tile), variant)
-		# Pontos da paleta de obstáculo (densidade maior, seed estável por mapa)
 		var rng := RandomNumberGenerator.new()
 		rng.seed = hash(map_data.key)
-		for i in range(50):
+		for i in range(46):
 			var x := rng.randf() * size.x
 			var y := rng.randf() * size.y
-			var radius := rng.randf_range(1.5, 4.0)
+			var radius := rng.randf_range(1.5, 3.6)
 			if map_data.obstacle_palette.size() > 0:
 				draw_circle(Vector2(x, y), radius, map_data.obstacle_palette[i % map_data.obstacle_palette.size()])
-		# Landmarks com contorno
 		if map_data.has_lake:
-			var lake_center := Vector2(size.x * 0.72, size.y * 0.62)
-			var lake_radius: float = min(size.x, size.y) * 0.18
+			var lake_center := Vector2(size.x * 0.7, size.y * 0.62)
+			var lake_radius: float = min(size.x, size.y) * 0.20
 			draw_circle(lake_center, lake_radius, map_data.lake_color)
-			var lake_rim: Color = map_data.lake_color.lightened(0.3)
-			lake_rim.a = 0.7
-			draw_arc(lake_center, lake_radius, 0.0, TAU, 32, lake_rim, 1.5, true)
 		if map_data.has_ruin:
 			var rw: float = min(size.x, size.y) * 0.22
-			var ruin_rect := Rect2(size.x * 0.18, size.y * 0.30, rw, rw)
-			draw_rect(ruin_rect, map_data.ruin_color)
-			var ruin_rim: Color = map_data.ruin_color.lightened(0.3)
-			ruin_rim.a = 0.75
-			draw_rect(ruin_rect, ruin_rim, false, 1.5)
-		# Vinheta (escurece as 4 bordas)
-		var vignette := Color(0, 0, 0, 0.28)
-		var v: float = min(size.x, size.y) * 0.10
-		draw_rect(Rect2(0, 0, size.x, v), vignette)
-		draw_rect(Rect2(0, size.y - v, size.x, v), vignette)
-		draw_rect(Rect2(0, 0, v, size.y), vignette)
-		draw_rect(Rect2(size.x - v, 0, v, size.y), vignette)
-		# Fog overlay (clamped pra não escurecer demais)
+			draw_rect(Rect2(size.x * 0.16, size.y * 0.26, rw, rw), map_data.ruin_color)
+		# Lua
+		draw_circle(Vector2(size.x * 0.82, size.y * 0.18), 9.0, Color(0.98, 0.92, 0.75, 0.85))
+		# Vinheta
+		var v: float = min(size.x, size.y) * 0.12
+		var shade := Color(0, 0, 0, 0.3)
+		draw_rect(Rect2(0, 0, size.x, v), shade)
+		draw_rect(Rect2(0, size.y - v, size.x, v), shade)
+		draw_rect(Rect2(0, 0, v, size.y), shade)
+		draw_rect(Rect2(size.x - v, 0, v, size.y), shade)
 		if map_data.fog_color.a > 0.0:
 			var fog: Color = map_data.fog_color
-			fog.a = min(fog.a, 0.35)
+			fog.a = min(fog.a, 0.3)
 			draw_rect(Rect2(Vector2.ZERO, size), fog)
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.435, 0.388, 0.557), false, 2.0)

@@ -1,7 +1,8 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scenes/ui/hud/Minimap.gd" id="1_minimap"]
+[ext_resource type="Script" path="res://scenes/ui/hud/Minimap.gd" id="1_mm"]
 
 [node name="Minimap" type="Control"]
-custom_minimum_size = Vector2(180, 130)
-script = ExtResource("1_minimap")
+custom_minimum_size = Vector2(120, 88)
+mouse_filter = 2
+script = ExtResource("1_mm")
