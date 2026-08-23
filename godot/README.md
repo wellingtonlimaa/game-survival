@@ -1,71 +1,72 @@
-# Noite dos Sobreviventes — Godot 4 Edition
+# Noite dos Sobreviventes — projeto Godot
 
-Survivor-like cooperativo de sobrevivência em floresta noturna, portado de pygame para
-**Godot 4.6 + GDScript** com arquitetura modular e data-driven.
+Survivor-like em Godot 4.6 + GDScript. Este diretório é o jogo em si.
 
-## Pré-requisitos
-
-- [Godot 4.6+](https://godotengine.org/download)
-- Windows 10/11, macOS, Linux
-
-## Rodar local
+## Rodar
 
 ```powershell
-# Abre o projeto no editor Godot
-godot --path .
-
-# Roda direto sem editor
 godot --path .
 ```
 
-Ou abra `project.godot` no Godot Editor e aperte **F5**.
+Ou abra `project.godot` no editor e aperte **F5**.
+Sem Godot instalado? Use o `INICIAR.bat` da pasta acima — ele instala pelo winget.
 
-## Conteúdo
+## Estrutura
 
-- **3 mapas** com biomas únicos (Floresta · Cemitério · Ermos)
-- **6 personagens** com stats próprios e arma inicial diferente
-- **3 armas iniciais** (Varinha, Facas, Aura) + sistema data-driven pra adicionar mais
-- **10 inimigos** com 5 padrões de IA (chase, kite, explode, summon, boss)
-- **3 chefes** rotacionando a cada 2 minutos
-- **6 passivas** e **5 relíquias** com 4 raridades (comum/raro/épico/lendário)
-- **3 sinergias** automáticas entre armas
-- **Eventos de arena**: Chuva de Meteoros · Neblina · Horda Elite · Chuva de Gemas
-- **4 modificadores** de mapa aleatórios por partida
-- **Pet** companheiro que atira sozinho
-- **Mercador** NPC que vende upgrade especial
-- **Meta-progressão**: loja permanente, talentos com prestige, conquistas, codex, ranking
-
-## Arquitetura
-
-Ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para detalhes. Resumo:
-
-- **Autoloads** centralizam estado (`GameManager`, `SaveSystem`, `EventBus`, `AudioManager`, `ProgressionManager`, `UnlockManager`, `MapRegistry`, `CharacterRegistry`)
-- **EventBus** com signals globais conecta sistemas sem acoplamento direto
-- **Resources `.tres`** definem todos os dados editáveis (armas, inimigos, mapas, etc.)
-- **Cenas modulares** — cada arma, inimigo, UI é um `.tscn` reutilizável
-- **3 slots de save** com schema versionado em `user://savegame_slot*.json`
-
-## Export
-
-### Windows
-```powershell
-godot --headless --path . --export-release "Windows Desktop" ../builds/windows/NoiteDosSobreviventes.exe
+```
+godot/
+├── project.godot            autoloads, input map, janela 540x960 (retrato)
+├── scenes/
+│   ├── main/                Main (boot) e GameWorld (a partida)
+│   ├── player/              Player + Sprite + Hurtbox
+│   ├── enemies/             Enemy (dirigido por EnemyData)
+│   ├── projectiles/         Projectile (6 modos de movimento)
+│   ├── pickups/             Pickup (gema, moeda, coração, baú, ímã, bomba)
+│   ├── world/               WorldRenderer, Altar, Merchant, Drone/Pet
+│   ├── effects/             AreaEffect, DamageNumber, ScreenEffects
+│   └── ui/                  menu/, hud/, upgrade/, screens/
+├── scripts/
+│   ├── autoload/            8 singletons
+│   ├── systems/             armas, spawn, upgrades, eventos, sinergias…
+│   ├── data/                Resources tipadas (WeaponData, EnemyData…)
+│   └── utils/               Theme, UIFactory, Rarity, SfxBank
+├── resources/               .tres: 20 armas, 16 inimigos, 12 passivas,
+│                            12 relíquias, 6 heróis, 3 mapas
+├── tests/                   testes headless (fumaça, telas, balanceamento)
+└── docs/ARCHITECTURE.md     como tudo se conecta
 ```
 
-### Web (HTML5)
+## Adicionar conteúdo
+
+**Arma nova**: copie um `.tres` de `resources/weapons/`, ajuste os campos e
+adicione a chave em `scripts/systems/WeaponRegistry.gd` (`KEYS`). Para dar
+evolução, acrescente uma entrada em `EVOLUTIONS`.
+
+**Inimigo novo**: copie um `.tres` de `resources/enemies/` e coloque a chave nos
+pesos de `SpawnDirector.WAVE_TABLE`.
+
+**Som novo**: `scripts/utils/SfxBank.gd` — os efeitos são sintetizados em runtime
+(ondas quadradas/ruído), então não precisa de arquivo de áudio.
+
+## Testes
+
+| Teste | O que faz |
+|---|---|
+| `SmokeTest` | joga 30s sozinho, escolhe upgrades, confere o mapa de teclas |
+| `ScreenTest` | instancia todas as telas de UI procurando erro |
+| `EvolutionTest` | valida as 20 evoluções de arma de ponta a ponta |
+| `VictoryTest` | objetivo → Ceifador da Noite → tela de vitória |
+| `DataReport` | imprime DPS por arma, curva de XP, raridades e vida dos inimigos |
+| `BalanceTest` | um bot joga 10 minutos e reporta nível/KOs/dano por minuto |
+| `PerfTest` | 180 inimigos na tela e mede o FPS |
+
 ```powershell
-godot --headless --path . --export-release "Web" ../builds/web/index.html
+godot --headless --path . res://tests/SmokeTest.tscn
+godot --headless --path . res://tests/ScreenTest.tscn
+godot --headless --path . res://tests/EvolutionTest.tscn
+godot --headless --path . res://tests/VictoryTest.tscn
+godot --headless --path . res://tests/ArenaTest.tscn
+godot --headless --path . res://tests/DataReport.tscn
+godot --headless --path . res://tests/BalanceTest.tscn -- 0.8
+godot --path . res://tests/PerfTest.tscn
 ```
-
-## CI/CD
-
-GitHub Actions em [.github/workflows/build.yml](.github/workflows/build.yml):
-- Valida que todos os scripts parseiam
-- Compila build Windows e Web em paralelo
-- Deploy automático do build Web no GitHub Pages
-
-## Controles
-
-- **WASD / Setas** — mover
-- **Mouse** — mira automática
-- **ESC** — pausar / voltar ao menu
