@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_d"]
+
+[resource]
+script = ExtResource("1_d")
+key = "hourglass"
+display_name = "Ampulheta Rachada"
+description = "-14% de recarga e +12% de duração dos efeitos."
+icon = "⏳"
+icon_color = Color(0.792, 0.749, 0.918, 1.0)
+damage_mult_bonus = 0.0
+xp_mult_bonus = 0.0
+coin_mult_bonus = 0.0
+max_hp_bonus = 0.0
+max_hp_pct_bonus = 0.0
+max_hp_loss = 0.0
+armor_bonus = 0.0
+luck_bonus = 0.0
+regen_bonus = 0.0
+heal_on_pickup = 0.0
+speed_mult = 1.0
+cooldown_mult = 0.86
+area_mult = 1.0
+duration_mult = 1.12
+dodge_bonus = 0.0
+crit_chance_bonus = 0.0
+crit_mult_bonus = 0.0
+lifesteal_bonus = 0.0
+pickup_bonus = 0.0
+extra_projectiles = 0
+extra_pierce = 0
+vision_bonus = 0.0
+extra_rerolls = 0
+revives = 0
+dash_cooldown_mult = 1.0
+grants_weapon = ""

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "boomerang"
+display_name = "Bumerangue"
+description = "Vai, atravessa a horda e volta pra sua mão ferindo tudo de novo."
+icon = "🪃"
+icon_color = Color(0.847, 0.702, 0.4, 1.0)
+family = 0
+behavior = 5
+cooldown = 1.1
+damage = 18.0
+projectile_count = 1
+projectile_speed = 520.0
+projectile_lifetime = 1.8
+projectile_radius = 9.0
+pierce = 99
+spread_radians = 0.35
+knockback = 90.0
+area = 60.0
+chain_targets = 0
+homing_strength = 0.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.25
+area_per_level = 0.06
+pierce_per_level = 0.0
+max_level = 8
+status = ""
+status_power = 0.0
+status_duration = 0.0
+status_chance = 1.0
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.949, 0.816, 0.478, 1.0)
+projectile_kind = "axe"
+trail = true
+sound_key = "blade"
+evolves_into = "storm_wheel"
+evolution_hint = "Evolui com Pedra-Ímã nível 4+"
+is_evolution = false

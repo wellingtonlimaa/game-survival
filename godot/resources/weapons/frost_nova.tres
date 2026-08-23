@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "frost_nova"
+display_name = "Nova Gélida"
+description = "Explosão de gelo em todas as direções. Congela e retarda."
+icon = "❄"
+icon_color = Color(0.549, 0.882, 1.0, 1.0)
+family = 0
+behavior = 9
+cooldown = 2.2
+damage = 20.4
+projectile_count = 8
+projectile_speed = 380.0
+projectile_lifetime = 1.0
+projectile_radius = 7.0
+pierce = 1
+spread_radians = 0.0
+knockback = 90.0
+area = 60.0
+chain_targets = 0
+homing_strength = 0.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.75
+area_per_level = 0.06
+pierce_per_level = 0.2
+max_level = 8
+status = "slow"
+status_power = 0.45
+status_duration = 2.2
+status_chance = 1.0
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.686, 0.933, 1.0, 1.0)
+projectile_kind = "bolt"
+trail = true
+sound_key = "freeze"
+evolves_into = "absolute_zero"
+evolution_hint = "Evolui com Sincronia nível 4+"
+is_evolution = false

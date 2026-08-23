@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="PassiveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_d"]
+
+[resource]
+script = ExtResource("1_d")
+key = "greed"
+display_name = "Ganância"
+description = "+18% de moedas e +6% de XP por nível."
+icon = "💰"
+icon_color = Color(1.0, 0.776, 0.298, 1.0)
+max_level = 5
+move_speed_per_level = 0.0
+regen_per_level = 0.0
+max_hp_bonus_per_level = 0.0
+magnet_per_level = 0.0
+armor_per_level = 0.0
+luck_per_level = 0.0
+cooldown_mult_per_level = 0.0
+damage_mult_per_level = 0.0
+area_mult_per_level = 0.0
+projectile_speed_per_level = 0.0
+duration_per_level = 0.0
+crit_chance_per_level = 0.0
+crit_mult_per_level = 0.0
+coin_mult_per_level = 0.18
+dodge_per_level = 0.0
+xp_mult_per_level = 0.06
+extra_projectiles_per_level = 0.0
+extra_pierce_per_level = 0.0
+vision_per_level = 0.0

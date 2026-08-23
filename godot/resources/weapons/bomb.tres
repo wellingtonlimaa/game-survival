@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "bomb"
+display_name = "Bomba de Piche"
+description = "Arremessa uma bomba que explode em área e deixa tudo em brasa."
+icon = "💣"
+icon_color = Color(0.627, 0.541, 0.29, 1.0)
+family = 0
+behavior = 7
+cooldown = 1.9
+damage = 43.2
+projectile_count = 1
+projectile_speed = 320.0
+projectile_lifetime = 0.85
+projectile_radius = 10.0
+pierce = 0
+spread_radians = 0.0
+knockback = 200.0
+area = 95.0
+chain_targets = 0
+homing_strength = 0.0
+explode_on_hit = true
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.25
+area_per_level = 0.08
+pierce_per_level = 0.0
+max_level = 8
+status = "burn"
+status_power = 6.0
+status_duration = 3.0
+status_chance = 1.0
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.298, 0.263, 0.235, 1.0)
+projectile_kind = "bomb"
+trail = false
+sound_key = "shoot_heavy"
+evolves_into = "meteor_bomb"
+evolution_hint = "Evolui com Ganância nível 4+"
+is_evolution = false

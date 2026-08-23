@@ -1,13 +1,31 @@
 [gd_resource type="Resource" script_class="PassiveData" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_pd"]
+[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_d"]
 
 [resource]
-script = ExtResource("1_pd")
+script = ExtResource("1_d")
 key = "regen"
-display_name = "Folego"
-description = "Recupera vida com o tempo e aumenta sua vida máxima."
-icon_color = Color(0.886, 0.275, 0.345, 1.0)
-max_level = 3
-regen_per_level = 0.27
-max_hp_bonus_per_level = 9.0
+display_name = "Fôlego"
+description = "Regenera 0.4 de vida por segundo e +8 de vida máxima."
+icon = "❤"
+icon_color = Color(0.439, 0.871, 0.494, 1.0)
+max_level = 5
+move_speed_per_level = 0.0
+regen_per_level = 0.4
+max_hp_bonus_per_level = 8.0
+magnet_per_level = 0.0
+armor_per_level = 0.0
+luck_per_level = 0.0
+cooldown_mult_per_level = 0.0
+damage_mult_per_level = 0.0
+area_mult_per_level = 0.0
+projectile_speed_per_level = 0.0
+duration_per_level = 0.0
+crit_chance_per_level = 0.0
+crit_mult_per_level = 0.0
+coin_mult_per_level = 0.0
+dodge_per_level = 0.0
+xp_mult_per_level = 0.0
+extra_projectiles_per_level = 0.0
+extra_pierce_per_level = 0.0
+vision_per_level = 0.0
