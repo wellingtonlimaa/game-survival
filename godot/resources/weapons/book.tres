@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "book"
+display_name = "Grimório Maldito"
+description = "Páginas amaldiçoadas giram ao contrário, cobrindo o que a órbita não cobre."
+icon = "📖"
+icon_color = Color(0.694, 0.478, 0.902, 1.0)
+family = 1
+behavior = 2
+cooldown = 4.5
+damage = 10.8
+projectile_count = 3
+projectile_speed = 0.0
+projectile_lifetime = 5.5
+projectile_radius = 10.0
+pierce = 99
+spread_radians = 0.0
+knockback = 50.0
+area = 60.0
+chain_targets = 0
+homing_strength = 0.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.34
+area_per_level = 0.06
+pierce_per_level = 0.0
+max_level = 8
+status = "mark"
+status_power = 0.12
+status_duration = 3.0
+status_chance = 0.6
+lifesteal = 0.0
+orbit_radius = 104.0
+orbit_speed = -3.4
+projectile_color = Color(0.784, 0.596, 1.0, 0.95)
+projectile_kind = "orbit"
+trail = false
+sound_key = "shoot_magic"
+evolves_into = "forbidden_tome"
+evolution_hint = "Evolui com Fortuna nível 4+"
+is_evolution = false

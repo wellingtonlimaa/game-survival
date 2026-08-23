@@ -1,12 +1,37 @@
 [gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_rd"]
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_d"]
 
 [resource]
-script = ExtResource("1_rd")
+script = ExtResource("1_d")
 key = "moon_shard"
 display_name = "Lasca Lunar"
-description = "+25% XP coletado e +15% sorte."
+description = "+30% de XP coletado e +20% de sorte."
+icon = "🌙"
 icon_color = Color(0.722, 0.553, 1.0, 1.0)
-xp_mult_bonus = 0.25
-luck_bonus = 0.15
+damage_mult_bonus = 0.0
+xp_mult_bonus = 0.3
+coin_mult_bonus = 0.0
+max_hp_bonus = 0.0
+max_hp_pct_bonus = 0.0
+max_hp_loss = 0.0
+armor_bonus = 0.0
+luck_bonus = 0.2
+regen_bonus = 0.0
+heal_on_pickup = 0.0
+speed_mult = 1.0
+cooldown_mult = 1.0
+area_mult = 1.0
+duration_mult = 1.0
+dodge_bonus = 0.0
+crit_chance_bonus = 0.0
+crit_mult_bonus = 0.0
+lifesteal_bonus = 0.0
+pickup_bonus = 0.0
+extra_projectiles = 0
+extra_pierce = 0
+vision_bonus = 0.0
+extra_rerolls = 0
+revives = 0
+dash_cooldown_mult = 1.0
+grants_weapon = ""

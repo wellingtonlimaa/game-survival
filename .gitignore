@@ -1,0 +1,15 @@
+# Atalhos do Windows guardam caminho absoluto — cada máquina gera o seu
+# com: powershell -ExecutionPolicy Bypass -File "godot\criar-atalho.ps1"
+*.lnk
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Python (protótipo antigo)
+__pycache__/
+*.pyc
+
+# Node (banana-push)
+node_modules/

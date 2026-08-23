@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "golem"
+display_name = "Golem de Pedra"
+description = "Blindado e imóvel feito montanha. Guarda moedas."
+tier = 0
+hp = 170.0
+speed = 42.0
+contact_damage = 25.0
+radius = 26.0
+xp_value = 24
+coin_value = 6
+armor = 4.0
+knockback_resist = 0.85
+behavior = 0
+attack_cooldown = 1.6
+prefered_distance = 220.0
+trigger_distance = 105.0
+windup_time = 0.6
+summon_pool = PackedStringArray()
+summon_count = 2
+split_into = ""
+split_count = 2
+charge_speed = 520.0
+charge_duration = 0.55
+explode_radius = 120.0
+coin_chance = 0.7
+heart_chance = 0.1
+chest_chance = 0.0
+body_color = Color(0.4, 0.4, 0.435, 1.0)
+eye_color = Color(0.549, 0.882, 1.0, 1.0)
+silhouette = "wide"
+icon = "🗿"
+projectile_speed = 220.0
+projectile_damage = 10.0
+projectile_radius = 6.0
+projectile_lifetime = 2.0
+projectile_color = Color(0.886, 0.275, 0.345, 1.0)
+projectile_count = 1

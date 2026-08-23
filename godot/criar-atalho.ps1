@@ -1,143 +1,225 @@
+# Gera o ícone do jogo (multi-resolução) e cria o atalho "Noite dos Sobreviventes"
+# na Área de Trabalho e na pasta do projeto.
+#
+# Uso: powershell -ExecutionPolicy Bypass -File "godot\criar-atalho.ps1"
+#
+# Por que existe: arquivo .bat SEMPRE usa o ícone genérico do Windows.
+# Quem carrega ícone bonito é o atalho (.lnk) — é ele que vai pra Área de Trabalho.
+
 Add-Type -AssemblyName System.Drawing
-Add-Type -AssemblyName System.Windows.Forms
 
-$projDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projDir = Split-Path -Parent $MyInvocation.MyCommand.Path          # ...\godot
+$rootDir = Split-Path -Parent $projDir                              # ...\game-survival
 $iconPath = Join-Path $projDir "icon.ico"
-$batPath = Join-Path $projDir "RODAR-JOGO.bat"
+$launcher = Join-Path $rootDir "INICIAR.bat"
 
-# === Gera o icone do diorama ===
-$size = 256
-$bmp = New-Object System.Drawing.Bitmap($size, $size)
-$g = [System.Drawing.Graphics]::FromImage($bmp)
-$g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-$g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-
-# Fundo gradiente noturno (roxo escuro)
-$bgRect = New-Object System.Drawing.Rectangle(0, 0, $size, $size)
-$bgBrush = New-Object System.Drawing.Drawing2D.LinearGradientBrush($bgRect, [System.Drawing.Color]::FromArgb(255, 18, 14, 38), [System.Drawing.Color]::FromArgb(255, 35, 24, 70), 90)
-$g.FillRectangle($bgBrush, $bgRect)
-$bgBrush.Dispose()
-
-# Halo da lua (gradient radial fake — circulos concentricos)
-$cx = 128; $cy = 110
-for ($i = 14; $i -ge 0; $i--) {
-    $r = 70 + $i * 8
-    $a = [int](6 + (14 - $i) * 4)
-    $brush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb($a, 141, 105, 226))
-    $g.FillEllipse($brush, $cx - $r, $cy - $r, $r * 2, $r * 2)
-    $brush.Dispose()
+if (-not (Test-Path $launcher)) {
+    Write-Host "ERRO: nao encontrei $launcher" -ForegroundColor Red
+    exit 1
 }
 
-# Lua
-$moonR = 56
-$moonBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 251, 234, 190))
-$g.FillEllipse($moonBrush, $cx - $moonR, $cy - $moonR, $moonR * 2, $moonR * 2)
-$moonBrush.Dispose()
-# Crateras
-$craterBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(140, 206, 191, 154))
-$g.FillEllipse($craterBrush, $cx + 8, $cy - 30, 20, 20)
-$g.FillEllipse($craterBrush, $cx - 22, $cy - 4, 14, 14)
-$craterBrush.Dispose()
+# ---------------------------------------------------------------- desenho ----
 
-# Vagalumes ao redor da lua
-$rng = New-Object System.Random(42)
-for ($i = 0; $i -lt 18; $i++) {
-    $ang = $rng.NextDouble() * [Math]::PI * 2
-    $dist = 70 + $rng.NextDouble() * 60
-    $px = $cx + [Math]::Cos($ang) * $dist
-    $py = $cy + [Math]::Sin($ang) * $dist * 0.65 - 5
-    $glowBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(140, 255, 224, 128))
-    $g.FillEllipse($glowBrush, $px - 4, $py - 4, 8, 8)
-    $glowBrush.Dispose()
-    $coreBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(230, 255, 250, 218))
-    $g.FillEllipse($coreBrush, $px - 1.5, $py - 1.5, 3, 3)
-    $coreBrush.Dispose()
-}
+function New-IconBitmap {
+    param([int]$Size)
 
-# Plataforma (chao escuro)
-$groundY = 208
-$groundBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 16, 12, 28))
-$g.FillRectangle($groundBrush, 24, $groundY, $size - 48, 28)
-$groundBrush.Dispose()
+    $bmp = New-Object System.Drawing.Bitmap($Size, $Size)
+    $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
 
-# Funcao auxiliar: desenha arvore (triangulos empilhados + tronco)
-function Draw-Tree($g, $bx, $by, $h, $color) {
-    $trunkW = $h * 0.16
-    $brush = New-Object System.Drawing.SolidBrush($color)
-    $g.FillRectangle($brush, $bx - $trunkW / 2, $by - $h * 0.45, $trunkW, $h * 0.45)
-    for ($i = 0; $i -lt 3; $i++) {
-        $y = $by - $h * (0.45 + $i * 0.20)
-        $w = $h * (0.65 - $i * 0.12)
-        $pts = @(
-            (New-Object System.Drawing.PointF([float]($bx - $w / 2), [float]$y)),
-            (New-Object System.Drawing.PointF([float]($bx + $w / 2), [float]$y)),
-            (New-Object System.Drawing.PointF([float]$bx, [float]($y - $h * 0.30)))
-        )
-        $g.FillPolygon($brush, $pts)
+    # tudo em coordenadas de 256 e escalado no fim
+    $k = $Size / 256.0
+    function S([double]$v) { return [float]($v * $k) }
+    function Col([int]$a, [int]$r, [int]$gr, [int]$b) {
+        return [System.Drawing.Color]::FromArgb($a, $r, $gr, $b)
     }
-    $brush.Dispose()
+    function Fill($brushColor, [double]$x, [double]$y, [double]$w, [double]$h) {
+        $br = New-Object System.Drawing.SolidBrush($brushColor)
+        $g.FillEllipse($br, (S $x), (S $y), (S $w), (S $h))
+        $br.Dispose()
+    }
+    function FillRect($brushColor, [double]$x, [double]$y, [double]$w, [double]$h) {
+        $br = New-Object System.Drawing.SolidBrush($brushColor)
+        $g.FillRectangle($br, (S $x), (S $y), (S $w), (S $h))
+        $br.Dispose()
+    }
+    function FillPoly($brushColor, [double[][]]$pts) {
+        $arr = New-Object 'System.Drawing.PointF[]' $pts.Length
+        for ($i = 0; $i -lt $pts.Length; $i++) {
+            $arr[$i] = New-Object System.Drawing.PointF((S $pts[$i][0]), (S $pts[$i][1]))
+        }
+        $br = New-Object System.Drawing.SolidBrush($brushColor)
+        $g.FillPolygon($br, $arr)
+        $br.Dispose()
+    }
+
+    # Nivel de detalhe: em 16/24/32 px o desenho precisa ser MUITO mais simples
+    $full = $Size -ge 48
+    $moonR = if ($full) { 62 } else { 76 }
+    $moonCy = if ($full) { 104 } else { 112 }
+    $heroScale = if ($full) { 1.0 } else { 0.82 }
+
+    # Fundo: gradiente roxo-noite
+    $bgRect = New-Object System.Drawing.Rectangle(0, 0, $Size, $Size)
+    $bgBrush = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
+        $bgRect, (Col 255 20 15 42), (Col 255 44 28 82), 90)
+    $g.FillRectangle($bgBrush, $bgRect)
+    $bgBrush.Dispose()
+
+    # Halo da lua
+    for ($i = 14; $i -ge 1; $i--) {
+        $r = $moonR + $i * 7
+        $a = [int](5 + (14 - $i) * 3.4)
+        Fill (Col $a 150 110 235) (128 - $r) ($moonCy - $r) ($r * 2) ($r * 2)
+    }
+
+    # Lua (o elemento que precisa ler mesmo em 16x16)
+    Fill (Col 255 252 238 198) (128 - $moonR) ($moonCy - $moonR) ($moonR * 2) ($moonR * 2)
+    if ($full) {
+        Fill (Col 120 214 197 156) 132 66 26 26
+        Fill (Col 110 214 197 156) 78 104 18 18
+        Fill (Col 90 214 197 156) 112 132 13 13
+    } else {
+        Fill (Col 110 214 197 156) 148 74 26 26
+    }
+
+    if ($full) {
+        # Vagalumes
+        $spots = @(@(36, 70), @(206, 60), @(220, 132), @(28, 140), @(186, 30), @(64, 30))
+        foreach ($sp in $spots) {
+            Fill (Col 120 255 224 128) ($sp[0] - 7) ($sp[1] - 7) 14 14
+            Fill (Col 235 255 250 218) ($sp[0] - 2.5) ($sp[1] - 2.5) 5 5
+        }
+
+        # Pinheiros nas laterais
+        foreach ($tx in @(28, 228)) {
+            FillRect (Col 255 14 10 26) ($tx - 4) 170 8 46
+            FillPoly (Col 255 18 13 34) @(@(($tx - 26), 186), @(($tx + 26), 186), @($tx, 132))
+            FillPoly (Col 255 24 17 44) @(@(($tx - 20), 158), @(($tx + 20), 158), @($tx, 112))
+        }
+    }
+
+    # Chão
+    FillRect (Col 255 12 9 24) 0 214 256 42
+
+    # Herói encapuzado — silhueta escura recortada na lua
+    $px = 128.0
+    $py = 216.0
+    $hs = $heroScale
+    if ($full) {
+        # capa
+        FillPoly (Col 255 40 30 74) @(@(($px - 30), ($py - 74)), @(($px + 30), ($py - 74)), @(($px + 40), $py), @(($px - 40), $py))
+    }
+    # túnica
+    FillPoly (Col 255 55 40 96) @(@(($px - 26 * $hs), ($py - 74 * $hs)), @(($px + 26 * $hs), ($py - 74 * $hs)), @(($px + 34 * $hs), $py), @(($px - 34 * $hs), $py))
+    # cabeça + capuz (um "pingo" escuro sobre a lua)
+    Fill (Col 255 24 17 44) ($px - 30 * $hs) ($py - 124 * $hs) (60 * $hs) (60 * $hs)
+    FillPoly (Col 255 24 17 44) @(@(($px - 30 * $hs), ($py - 90 * $hs)), @($px, ($py - 142 * $hs)), @(($px + 30 * $hs), ($py - 90 * $hs)))
+    # olhos dourados (a marca do jogo)
+    $eye = 14 * $hs
+    Fill (Col 255 255 204 90) ($px - 17 * $hs) ($py - 104 * $hs) $eye $eye
+    Fill (Col 255 255 204 90) ($px + 3 * $hs) ($py - 104 * $hs) $eye $eye
+
+    if ($full) {
+        # Moldura dourada sutil
+        $pen = New-Object System.Drawing.Pen((Col 90 255 198 76), [float](6 * $k))
+        $g.DrawRectangle($pen, [float](3 * $k), [float](3 * $k), [float](($Size - 6 * $k) - 1), [float](($Size - 6 * $k) - 1))
+        $pen.Dispose()
+    }
+
+    $g.Dispose()
+    return $bmp
 }
 
-$darkTree = [System.Drawing.Color]::FromArgb(255, 16, 11, 26)
-$lighterTree = [System.Drawing.Color]::FromArgb(255, 24, 18, 40)
-Draw-Tree $g 50 $groundY 70 $darkTree
-Draw-Tree $g 92 $groundY 90 $lighterTree
-Draw-Tree $g 168 $groundY 90 $lighterTree
-Draw-Tree $g 210 $groundY 70 $darkTree
+# ------------------------------------------------------------------ .ico -----
 
-# Personagem central
-$pcx = 128; $pcy = $groundY - 10
-# Sombra
-$shadowBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(110, 0, 0, 0))
-$g.FillEllipse($shadowBrush, $pcx - 18, $pcy + 6, 36, 10)
-$shadowBrush.Dispose()
-# Tronco / capuz
-$bodyBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 78, 58, 122))
-$g.FillRectangle($bodyBrush, $pcx - 16, $pcy - 30, 32, 36)
-$bodyBrush.Dispose()
-# Cabeca
-$headBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 27, 20, 50))
-$g.FillEllipse($headBrush, $pcx - 17, $pcy - 50, 34, 30)
-$headBrush.Dispose()
-# Olhos dourados
-$eyeBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 255, 204, 90))
-$g.FillEllipse($eyeBrush, $pcx - 8, $pcy - 40, 6, 6)
-$g.FillEllipse($eyeBrush, $pcx + 2, $pcy - 40, 6, 6)
-$eyeBrush.Dispose()
+function Save-MultiIcon {
+    param([int[]]$Sizes, [string]$Path)
 
-$g.Dispose()
+    $streams = @{}
+    foreach ($s in $Sizes) {
+        $bmp = New-IconBitmap -Size $s
+        $ms = New-Object System.IO.MemoryStream
+        $bmp.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png)
+        $bmp.Dispose()
+        $streams[$s] = $ms.ToArray()
+        $ms.Dispose()
+    }
 
-# Salva como .ico (256x256)
-$tmpPng = Join-Path $env:TEMP "noite_icon.png"
-$bmp.Save($tmpPng, [System.Drawing.Imaging.ImageFormat]::Png)
-$bmp.Dispose()
+    $fs = [System.IO.File]::Create($Path)
+    $bw = New-Object System.IO.BinaryWriter($fs)
+    $ordered = $Sizes | Sort-Object
 
-# Converte PNG para ICO (encoder nativo .NET)
-$bmpForIcon = New-Object System.Drawing.Bitmap($tmpPng)
-$hIcon = $bmpForIcon.GetHicon()
-$icon = [System.Drawing.Icon]::FromHandle($hIcon)
-$fs = [System.IO.File]::Create($iconPath)
-$icon.Save($fs)
-$fs.Close()
-$icon.Dispose()
-$bmpForIcon.Dispose()
+    $bw.Write([UInt16]0)                 # reservado
+    $bw.Write([UInt16]1)                 # tipo: 1 = ícone
+    $bw.Write([UInt16]$ordered.Count)
 
-Write-Host "Icone gerado em: $iconPath"
+    $offset = 6 + 16 * $ordered.Count
+    foreach ($s in $ordered) {
+        $len = $streams[$s].Length
+        $dim = if ($s -ge 256) { 0 } else { $s }
+        $bw.Write([Byte]$dim)            # largura
+        $bw.Write([Byte]$dim)            # altura
+        $bw.Write([Byte]0)               # cores da paleta
+        $bw.Write([Byte]0)               # reservado
+        $bw.Write([UInt16]1)             # planos
+        $bw.Write([UInt16]32)            # bits por pixel
+        $bw.Write([UInt32]$len)
+        $bw.Write([UInt32]$offset)
+        $offset += $len
+    }
+    foreach ($s in $ordered) { $bw.Write($streams[$s]) }
 
-# === Cria o atalho na Area de Trabalho ===
+    $bw.Flush()
+    $fs.Close()
+}
+
+Write-Host ""
+Write-Host "Gerando icone multi-resolucao..." -ForegroundColor Cyan
+Save-MultiIcon -Sizes @(16, 24, 32, 48, 64, 128, 256) -Path $iconPath
+Write-Host "Icone: $iconPath" -ForegroundColor Green
+
+# ----------------------------------------------------------------- atalho ----
+
+function New-GameShortcut {
+    param([string]$Path)
+    $wshell = New-Object -ComObject WScript.Shell
+    $sc = $wshell.CreateShortcut($Path)
+    $sc.TargetPath = $launcher
+    $sc.WorkingDirectory = $rootDir
+    $sc.IconLocation = "$iconPath, 0"
+    $sc.Description = "Noite dos Sobreviventes - survivor-like noturno"
+    $sc.WindowStyle = 7   # inicia minimizado: a janela preta do bat nao rouba a tela
+    $sc.Save()
+}
+
 $desktop = [Environment]::GetFolderPath("Desktop")
-$shortcutPath = Join-Path $desktop "Noite dos Sobreviventes.lnk"
+$desktopShortcut = Join-Path $desktop "Noite dos Sobreviventes.lnk"
+New-GameShortcut -Path $desktopShortcut
+Write-Host "Atalho na Area de Trabalho: $desktopShortcut" -ForegroundColor Green
 
-$wshell = New-Object -ComObject WScript.Shell
-$shortcut = $wshell.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = $batPath
-$shortcut.WorkingDirectory = $projDir
-$shortcut.IconLocation = "$iconPath, 0"
-$shortcut.Description = "Noite dos Sobreviventes - Survivor-like noturno"
-$shortcut.WindowStyle = 7  # minimizado (a janela preta do bat fica fora do caminho)
-$shortcut.Save()
+$localShortcut = Join-Path $rootDir "JOGAR.lnk"
+New-GameShortcut -Path $localShortcut
+Write-Host "Atalho na pasta do projeto: $localShortcut" -ForegroundColor Green
+
+# Remove a copia solta do INICIAR.bat na Area de Trabalho (ela nem funciona ali,
+# porque procura o setup-and-run.ps1 na propria Area de Trabalho).
+$strayBat = Join-Path $desktop "INICIAR.bat"
+if (Test-Path $strayBat) {
+    $same = (Get-Content $strayBat -Raw) -eq (Get-Content $launcher -Raw)
+    if ($same) {
+        Remove-Item $strayBat -Force
+        Write-Host "Removi a copia quebrada do INICIAR.bat da Area de Trabalho." -ForegroundColor Yellow
+    } else {
+        Write-Host "Existe um INICIAR.bat diferente na Area de Trabalho - deixei quieto." -ForegroundColor Yellow
+    }
+}
+
+# Limpa o cache de icones do Explorer pra atualizacao aparecer na hora
+try { ie4uinit.exe -show } catch { }
 
 Write-Host ""
-Write-Host "Atalho criado em: $shortcutPath"
+Write-Host "Pronto! Duplo clique em 'Noite dos Sobreviventes' na Area de Trabalho." -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Pronto! Da um duplo clique no atalho 'Noite dos Sobreviventes' na sua Area de Trabalho."

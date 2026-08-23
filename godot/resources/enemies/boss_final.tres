@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_ed"]
+
+[resource]
+script = ExtResource("1_ed")
+key = "boss_final"
+display_name = "Ceifador da Noite"
+description = "O dono da noite. Espiral infinita de morte roxa."
+tier = 3
+hp = 2400.0
+speed = 62.0
+contact_damage = 36.0
+radius = 46.0
+xp_value = 380
+coin_value = 150
+armor = 6.0
+knockback_resist = 0.95
+behavior = 6
+attack_cooldown = 1.6
+prefered_distance = 220.0
+trigger_distance = 105.0
+windup_time = 0.6
+summon_pool = PackedStringArray()
+summon_count = 2
+split_into = ""
+split_count = 2
+charge_speed = 520.0
+charge_duration = 0.55
+explode_radius = 120.0
+coin_chance = 1.0
+heart_chance = 1.0
+chest_chance = 1.0
+body_color = Color(0.18, 0.098, 0.259, 1.0)
+eye_color = Color(1.0, 0.298, 0.549, 1.0)
+silhouette = "crown"
+icon = "☠"
+projectile_speed = 230.0
+projectile_damage = 20.0
+projectile_radius = 10.0
+projectile_lifetime = 3.2
+projectile_color = Color(0.867, 0.361, 0.945, 1.0)
+projectile_count = 16

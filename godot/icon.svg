@@ -1,1 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><radialGradient id="m" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFC74D"/><stop offset="100%" stop-color="#FFA31F"/></radialGradient></defs><rect width="128" height="128" rx="20" fill="#0E0B18"/><circle cx="64" cy="64" r="34" fill="url(#m)"/><circle cx="74" cy="58" r="10" fill="#0E0B18" opacity="0.55"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#140F2A"/>
+      <stop offset="100%" stop-color="#2C1C52"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8D69E2" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#8D69E2" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="128" height="128" rx="20" fill="url(#bg)"/>
+  <circle cx="64" cy="54" r="58" fill="url(#halo)"/>
+
+  <!-- lua -->
+  <circle cx="64" cy="52" r="33" fill="#FCEEC6"/>
+  <circle cx="76" cy="40" r="7" fill="#D6C59C" opacity="0.5"/>
+  <circle cx="52" cy="62" r="5" fill="#D6C59C" opacity="0.45"/>
+
+  <!-- vagalumes -->
+  <circle cx="20" cy="34" r="2.5" fill="#FFE080" opacity="0.9"/>
+  <circle cx="106" cy="28" r="2.5" fill="#FFE080" opacity="0.9"/>
+  <circle cx="112" cy="66" r="2" fill="#FFE080" opacity="0.75"/>
+  <circle cx="16" cy="70" r="2" fill="#FFE080" opacity="0.75"/>
+
+  <!-- pinheiros -->
+  <polygon points="14,96 34,96 24,66" fill="#120D22"/>
+  <polygon points="94,96 114,96 104,66" fill="#120D22"/>
+
+  <!-- chão -->
+  <rect x="0" y="104" width="128" height="24" fill="#0C0918"/>
+
+  <!-- herói encapuzado -->
+  <polygon points="47,104 81,104 77,66 51,66" fill="#372860"/>
+  <circle cx="64" cy="60" r="16" fill="#181130"/>
+  <polygon points="48,62 64,34 80,62" fill="#181130"/>
+  <circle cx="58" cy="60" r="4" fill="#FFCC5A"/>
+  <circle cx="70" cy="60" r="4" fill="#FFCC5A"/>
+</svg>

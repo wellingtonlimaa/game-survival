@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "spirit"
+display_name = "Espírito Caçador"
+description = "Alma teleguiada que persegue o alvo até acertar."
+icon = "👻"
+icon_color = Color(0.694, 0.902, 0.902, 1.0)
+family = 0
+behavior = 12
+cooldown = 1.0
+damage = 20.4
+projectile_count = 1
+projectile_speed = 300.0
+projectile_lifetime = 2.6
+projectile_radius = 8.0
+pierce = 0
+spread_radians = 0.0
+knockback = 70.0
+area = 60.0
+chain_targets = 0
+homing_strength = 5.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.34
+area_per_level = 0.06
+pierce_per_level = 0.0
+max_level = 8
+status = ""
+status_power = 0.0
+status_duration = 0.0
+status_chance = 1.0
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.784, 0.941, 0.941, 1.0)
+projectile_kind = "bolt"
+trail = true
+sound_key = "shoot_magic"
+evolves_into = "soul_swarm"
+evolution_hint = "Evolui com Marca da Sorte nível 4+"
+is_evolution = false

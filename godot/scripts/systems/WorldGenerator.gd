@@ -3,6 +3,13 @@ extends RefCounted
 
 const ALTAR_KINDS := ["heal", "xp", "gold", "storm", "elite"]
 
+## Arenas de chefe: cada uma exige um nível do herói pra abrir
+const BOSS_ARENAS := [
+	{"boss": "boss_base", "level": 5, "at": Vector2(0.80, 0.22)},
+	{"boss": "boss_frost", "level": 11, "at": Vector2(0.18, 0.82)},
+	{"boss": "boss_warlock", "level": 18, "at": Vector2(0.84, 0.80)},
+]
+
 var map: Resource
 
 
@@ -21,6 +28,7 @@ func generate(seed_value: int = 0) -> Dictionary:
 	var obstacles := _generate_obstacles(rng, player_start, landmarks)
 	var altars := _generate_altars(rng, player_start, landmarks, obstacles)
 	var details := _generate_terrain_details(rng)
+	var arenas := _generate_boss_arenas()
 
 	return {
 		"player_start": player_start,
@@ -28,7 +36,22 @@ func generate(seed_value: int = 0) -> Dictionary:
 		"obstacles": obstacles,
 		"altars": altars,
 		"details": details,
+		"boss_arenas": arenas,
 	}
+
+
+## Posições fixas por porcentagem do mapa: fáceis de achar no minimapa
+func _generate_boss_arenas() -> Array:
+	var out: Array = []
+	for entry in BOSS_ARENAS:
+		var at: Vector2 = entry["at"]
+		out.append({
+			"pos": Vector2(map.world_width * at.x, map.world_height * at.y),
+			"boss": String(entry["boss"]),
+			"level": int(entry["level"]),
+			"radius": 190.0,
+		})
+	return out
 
 
 func _generate_landmarks(rng: RandomNumberGenerator, center: Vector2, player_start: Vector2) -> Array:

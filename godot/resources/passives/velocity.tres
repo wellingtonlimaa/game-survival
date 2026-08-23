@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="PassiveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/PassiveData.gd" id="1_d"]
+
+[resource]
+script = ExtResource("1_d")
+key = "velocity"
+display_name = "Tiro Veloz"
+description = "+14% na velocidade do tiro e +8% de alcance por nível."
+icon = "🎯"
+icon_color = Color(0.667, 0.937, 0.62, 1.0)
+max_level = 5
+move_speed_per_level = 0.0
+regen_per_level = 0.0
+max_hp_bonus_per_level = 0.0
+magnet_per_level = 0.0
+armor_per_level = 0.0
+luck_per_level = 0.0
+cooldown_mult_per_level = 0.0
+damage_mult_per_level = 0.0
+area_mult_per_level = 0.0
+projectile_speed_per_level = 0.14
+duration_per_level = 0.08
+crit_chance_per_level = 0.0
+crit_mult_per_level = 0.0
+coin_mult_per_level = 0.0
+dodge_per_level = 0.0
+xp_mult_per_level = 0.0
+extra_projectiles_per_level = 0.0
+extra_pierce_per_level = 0.0
+vision_per_level = 0.0

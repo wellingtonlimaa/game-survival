@@ -1,12 +1,37 @@
 [gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_rd"]
+[ext_resource type="Script" path="res://scripts/data/RelicData.gd" id="1_d"]
 
 [resource]
-script = ExtResource("1_rd")
+script = ExtResource("1_d")
 key = "phoenix_ember"
 display_name = "Brasa da Fênix"
-description = "Cura 55 HP agora e regenera 0.35/s para sempre."
+description = "Cura 60 agora, +0.4 de regeneração e te levanta uma vez ao morrer."
+icon = "🔥"
 icon_color = Color(1.0, 0.561, 0.243, 1.0)
-regen_bonus = 0.35
-heal_on_pickup = 55.0
+damage_mult_bonus = 0.0
+xp_mult_bonus = 0.0
+coin_mult_bonus = 0.0
+max_hp_bonus = 0.0
+max_hp_pct_bonus = 0.0
+max_hp_loss = 0.0
+armor_bonus = 0.0
+luck_bonus = 0.0
+regen_bonus = 0.4
+heal_on_pickup = 60.0
+speed_mult = 1.0
+cooldown_mult = 1.0
+area_mult = 1.0
+duration_mult = 1.0
+dodge_bonus = 0.0
+crit_chance_bonus = 0.0
+crit_mult_bonus = 0.0
+lifesteal_bonus = 0.0
+pickup_bonus = 0.0
+extra_projectiles = 0
+extra_pierce = 0
+vision_bonus = 0.0
+extra_rerolls = 0
+revives = 1
+dash_cooldown_mult = 1.0
+grants_weapon = ""

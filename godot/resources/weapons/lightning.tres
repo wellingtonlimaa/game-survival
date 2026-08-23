@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "lightning"
+display_name = "Cajado Relâmpago"
+description = "Raio instantâneo que salta entre inimigos e atordoa."
+icon = "⚡"
+icon_color = Color(0.722, 0.867, 1.0, 1.0)
+family = 0
+behavior = 6
+cooldown = 1.6
+damage = 28.8
+projectile_count = 1
+projectile_speed = 0.0
+projectile_lifetime = 0.25
+projectile_radius = 0.0
+pierce = 0
+spread_radians = 0.0
+knockback = 40.0
+area = 320.0
+chain_targets = 3
+homing_strength = 0.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.0
+area_per_level = 0.06
+pierce_per_level = 0.0
+max_level = 8
+status = "stun"
+status_power = 1.0
+status_duration = 0.35
+status_chance = 0.5
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.784, 0.902, 1.0, 1.0)
+projectile_kind = "spark"
+trail = false
+sound_key = "thunder"
+evolves_into = "zeus_wrath"
+evolution_hint = "Evolui com Olho Fatal nível 4+"
+is_evolution = false

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "missile"
+display_name = "Míssil Espectral"
+description = "Míssil teleguiado que persegue o alvo e explode em área."
+icon = "🚀"
+icon_color = Color(0.949, 0.475, 0.361, 1.0)
+family = 0
+behavior = 12
+cooldown = 1.45
+damage = 26.0
+projectile_count = 1
+projectile_speed = 270.0
+projectile_lifetime = 3.0
+projectile_radius = 8.0
+pierce = 0
+spread_radians = 0.5
+knockback = 140.0
+area = 72.0
+chain_targets = 0
+homing_strength = 6.0
+explode_on_hit = true
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.34
+area_per_level = 0.08
+pierce_per_level = 0.0
+max_level = 8
+status = "burn"
+status_power = 5.0
+status_duration = 2.0
+status_chance = 0.6
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(1.0, 0.612, 0.404, 1.0)
+projectile_kind = "bolt"
+trail = true
+sound_key = "shoot_heavy"
+evolves_into = "missile_swarm"
+evolution_hint = "Evolui com Tiro Múltiplo nível 3+"
+is_evolution = false

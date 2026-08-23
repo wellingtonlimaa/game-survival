@@ -1,23 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scenes/ui/screens/MapSelection.gd" id="1_mapsel"]
-[ext_resource type="PackedScene" path="res://scenes/ui/menu/MenuBackground.tscn" id="2_bg"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play"]
-bg_color = Color(1, 0.776, 0.298, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 5
-border_color = Color(0.435, 0.275, 0.063, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-content_margin_left = 24.0
-content_margin_top = 12.0
-content_margin_right = 24.0
-content_margin_bottom = 14.0
+[ext_resource type="Script" path="res://scenes/ui/screens/MapSelection.gd" id="1_s"]
 
 [node name="MapSelection" type="Control"]
 layout_mode = 3
@@ -26,63 +9,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_mapsel")
-
-[node name="MenuBackground" parent="." instance=ExtResource("2_bg")]
-layout_mode = 1
-
-[node name="Layout" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-offset_left = 24.0
-offset_top = 24.0
-offset_right = -24.0
-offset_bottom = -24.0
-theme_override_constants/separation = 16
-
-[node name="Title" type="Label" parent="Layout"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
-theme_override_font_sizes/font_size = 32
-text = "Escolha o Cenário"
-horizontal_alignment = 1
-
-[node name="Subtitle" type="Label" parent="Layout"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.722, 0.694, 0.808, 1)
-theme_override_font_sizes/font_size = 16
-text = "Cada terreno traz seus próprios perigos. Escolha com sabedoria."
-horizontal_alignment = 1
-
-[node name="CardsRow" type="HBoxContainer" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/separation = 10
-
-[node name="ButtonRow" type="HBoxContainer" parent="Layout"]
-layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 16
-
-[node name="BackButton" type="Button" parent="Layout/ButtonRow"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.953, 0.929, 0.871, 1)
-theme_override_font_sizes/font_size = 18
-text = "← Voltar"
-
-[node name="PlayButton" type="Button" parent="Layout/ButtonRow"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.137, 0.094, 0.039, 1)
-theme_override_font_sizes/font_size = 22
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_play")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_play")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_play")
-text = "JOGAR"
+script = ExtResource("1_s")

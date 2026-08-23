@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WeaponData.gd" id="1_wd"]
+
+[resource]
+script = ExtResource("1_wd")
+key = "axe"
+display_name = "Machado Giratório"
+description = "Arremesso em arco por cima da horda. Atravessa e cai pesado."
+icon = "🪓"
+icon_color = Color(0.741, 0.502, 0.31, 1.0)
+family = 0
+behavior = 4
+cooldown = 1.45
+damage = 33.6
+projectile_count = 1
+projectile_speed = 430.0
+projectile_lifetime = 1.5
+projectile_radius = 11.0
+pierce = 3
+spread_radians = 0.3
+knockback = 170.0
+area = 60.0
+chain_targets = 0
+homing_strength = 0.0
+explode_on_hit = false
+damage_per_level = 0.25
+cooldown_per_level = 0.05
+count_per_level = 0.34
+area_per_level = 0.06
+pierce_per_level = 0.0
+max_level = 8
+status = ""
+status_power = 0.0
+status_duration = 0.0
+status_chance = 1.0
+lifesteal = 0.0
+orbit_radius = 70.0
+orbit_speed = 2.8
+projectile_color = Color(0.878, 0.694, 0.478, 1.0)
+projectile_kind = "axe"
+trail = true
+sound_key = "shoot_heavy"
+evolves_into = "executioner"
+evolution_hint = "Evolui com Coração de Ferro nível 4+"
+is_evolution = false
